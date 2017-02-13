@@ -1,3 +1,4 @@
+
 /*
  * Jeremy Kerby
  * Imported from Lab: Argument Parser
@@ -52,7 +53,8 @@ public class ArgumentMap {
 			} else {
 				// args[i] is not a flag
 				if (FLAG == true) { // prev arg was flag so this is its value
-					arguments.putIfAbsent(args[i - 1], args[i]); // save value to prev
+					arguments.putIfAbsent(args[i - 1], args[i]); // save value
+																	// to prev
 					FLAG = false;
 				}
 			}

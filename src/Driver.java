@@ -2,121 +2,87 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class Driver {
 
 	static ArgumentMap arguments;
 	static WordIndex index;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		// TODO
-		System.out.println(">> main() >> start\n");
+		System.out.println(">> main() >> start");
 
 		arguments = new ArgumentMap(args);
-		index = new WordIndex();
 
-		System.out.println(">> main() >> My stored args: " + arguments.toString());
-		System.out.println(">> main() >> My stored index: " + index.toString());
+		processPathArgs();
 
-		fileOpener();
+		processIndexArgs();
 
-		saveWordIndexToFile();
-		
-		System.out.println("\n>> main() >> end");
+		System.out.println(">> main() >> end");
+
 	}
 
-	private static void saveWordIndexToFile() {
-		System.out.println("\n>> saveWordIndexToFile()");
-		
-		if (arguments.hasFlag("-index") == false) { // no path given
-			// {-path=html/hello.html}
-			System.out.println(">> fileOpener() >> Do not save index file. " + arguments.toString());
-			
+	private static void processPathArgs() throws IOException {
+		System.out.println(">> processPathArgs() >> start");
+
+		System.out.println(">> processPathArgs() >> current arguments >> " + arguments.toString());
+
+		String pathArgPayload = arguments.getString("-path");
+
+		if (pathArgPayload == null) {
+			// no key or value pair found for -path
+			System.out.println(">> processPathArgs() >> You did not enter -path file. Try again.");
 		} else {
-			if (arguments.getString("-index") == null) { // no path given
-				// {-index=null, -path=html/hello.html}
-				// index is there but no value
-				System.out.println(">> fileOpener() >> Save index file. " + arguments.toString());
-				File indexFile = new File("index.json");
-				try {
-					indexFile.createNewFile();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
+			if (pathArgPayload.endsWith(".html") || pathArgPayload.endsWith(".htm")) {
+				System.out.println(">> processPathArgs() >> You entered valid .html or .htm file.");
+				// for this file call openFile(path, index)
+				File file = new File(pathArgPayload);
+				openFile(file.toPath());
+			} else if (pathArgPayload.endsWith("/")) {
+				System.out.println(">> processPathArgs() >> You entered a valid directory.");
+				// for every file call openFile(path, index)
+				File directory = new File(pathArgPayload);
+				File[] listOfFiles = directory.listFiles();
+				for (File file : listOfFiles) {
+					openFile(file.toPath());
 				}
 			} else {
-				System.out.println(">> fileOpener() >> Save index file. " + arguments.toString());
-				File indexFile = new File(arguments.getString("-index"));
-				try {
-					indexFile.createNewFile();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				System.out.println(">> processPathArgs() >> You did not enter a valid directory, .html or .htm file.");
 			}
-			
-			// index is there with value
-			
 		}
+		System.out.println(">> processPathArgs() >> end");
 	}
 
-	private static void fileOpener() {
-		System.out.println("\n>> fileOpener()");
+	private static void openFile(Path p) throws IOException {
+		System.out.println(">> processPathArgs() >> openFile() >> Getting file " + p.toString());
+		index = WordIndexBuilder.buildIndex(p);
+	}
 
-		System.out.println(">> Getting file(s) " + arguments.getString("-path"));
+	private static void processIndexArgs() throws IOException {
+		System.out.println(">> processIndexArgs() >> start");
 
-		if (arguments.getString("-path") == null) { // no path given
-			System.out.println(">> fileOpener() >> You did not enter a file/directory");
-
-		} else { // path given
-			System.out.println(">> fileOpener() >> You did enter a file/file path");
-
-			String payload = arguments.getString("-path");
-			Path path = Paths.get(payload);
-
-			// check if was file or directory
-			if (payload.endsWith(".html") || payload.endsWith(".htm")) { // file
-				System.out.println(">> fileOpener() >> You gave a single HTML/HTM file");
-
-				WordIndexBuilder wib = new WordIndexBuilder();
-				try {
-					System.out.println(">> fileOpener() >> Building word index");
-
-					wib.buildIndex(path, index);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println(">> fileOpener() >> Populated data structure:\n" + index.toString());
-			} else if (payload.endsWith("/") || payload.endsWith("\\")) { // directory
-				System.out.println(">> fileOpener() >> You gave a directory");
-				
-				File directory = new File(path.toString());
-				File[] listOfFiles = directory.listFiles();
-				
-				for (int i = 0; i < listOfFiles.length; i++) {
-					String file = path.toString() + "/" + listOfFiles[i].getName();
-					//System.out.println("File " + file);
-					WordIndexBuilder wib = new WordIndexBuilder();
-					Path path2 = Paths.get(file);
-					try {
-						System.out.println(">> fileOpener() >> Building word index");
-						
-						wib.buildIndex(path2, index);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					System.out.println(">> fileOpener() >> Populated data structure:\n" + index.toString());
-				}
-				
+		if (arguments.hasFlag("-index") == false) {
+			// no key or value pair found for -index do not save anything
+			System.out.println(">> processIndexArgs() >> You did not enter -index file. No output file produced.");
+		} else {
+			String indexArgPayload = arguments.getString("-index");
+			if (indexArgPayload == null) {
+				// we were given -index argument with no value
+				saveFile("index.json");
+			} else {
+				// we were given -index argument with value
+				saveFile(indexArgPayload);
 			}
-
-			// given directory
-			// for each file in directory
-			// Use WordIndex buildIndex
-			// all else we do not know how to handle what you gave me
-
 		}
+		System.out.println(">> processIndexArgs() >> end");
+	}
+
+	private static void saveFile(String p) throws IOException {
+		System.out.println(">> processIndexArgs() >> saveFile() >> Saving file " + p);
+		Path path = Paths.get(p);
+		WordIndexWriter.writeIndex(index, path);
 	}
 }

@@ -52,39 +52,44 @@ public class WordIndexBuilder {
 		 * TODO: Fill this in using a BufferedReader and try-with-resources
 		 * block.
 		 */
-		System.out.println("\n>> buildIndex()");
+		System.out.println(">> buildIndex() >> start");
+		System.out.println(">> buildIndex() >> Working file " + path.toString());
+		System.out.println(">> buildIndex() >> Current index " + index.toString());
 
+		HTMLCleaner htmlCleaner = new HTMLCleaner();
+
+		// using the UTF-8 character encoding for all file processing
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-			String line = null;
-			int masterIndex = 0;
-			String data;
+			String line = "";
+			int masterIndex = 1; // the positions should start at 1
+			String masterString = "";
+			int curInt;
+			char curChar;
 
-			while ((line = reader.readLine()) != null) {
-				// index.add(line, 0);
-				// System.out.println(line);
-				String words[] = line.split("[\\s?-]+");
-				for (int i = 0; i < words.length; i++) {
-					// every single index string
-
-					if (!words[i].equals("") && !words[i].matches("\\d+")) {
-						data = words[i].toLowerCase();
-						data = data.replaceAll("[.]", "");
-						/*
-						// data, is the word to save
-						System.out.println(data);
-						// path, is data's location
-						System.out.println(path.toString());
-						// masterIndex, was the index in file where found
-						System.out.println(masterIndex);
-						*/
-						index.add(data, path.toString(), masterIndex);
-					}
-					if (!words[i].equals(""))
-						masterIndex++;
-
-				}
+			while ((curInt = reader.read()) != -1) {
+				curChar = (char) curInt;
+				masterString += curChar;
 			}
 
+			System.out.println(">> buildIndex() >> data before" + masterString);
+
+			// process masterString for entry
+			masterString = htmlCleaner.stripHTML(masterString);
+
+			System.out.println(">> buildIndex() >> data after" + masterString);
+
+			// split the text into individual words by spaces
+			String words[] = masterString.split(" ");
+			for (int i = 0; i < words.length; i++) {
+				// if word[i] is an actual word than add it and increase
+				// masterIndex by one
+				if (!words[i].equals(" ") && !words[i].equals("") && words[i].matches("\\w*")) {
+					index.add(words[i], path.toString(), masterIndex);
+					masterIndex++;
+				}
+			}
+			System.out.println(">> buildIndex() >> Current index " + index.toString());
 		}
+		System.out.println(">> buildIndex() >> end");
 	}
 }

@@ -6,11 +6,10 @@
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Nested data structure to store strings found and the files and positions they
@@ -21,7 +20,7 @@ public class WordIndex {
 	/**
 	 * Stores a mapping of words to the positions the words were found.
 	 */
-	private Map<String, HashMap<String, Set<Integer>>> wordIndex;
+	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
 
 	/**
 	 * Initializes the index. For every key (word) of the outer HashMap the
@@ -29,7 +28,7 @@ public class WordIndex {
 	 * value is a Set of Integer.
 	 */
 	public WordIndex() {
-		wordIndex = new HashMap<String, HashMap<String, Set<Integer>>>();
+		wordIndex = new TreeMap<String, TreeMap<String, TreeSet<Integer>>>();
 	}
 
 	/**
@@ -43,22 +42,29 @@ public class WordIndex {
 	 *            position word was found
 	 */
 	public void add(String word, String file, int position) {
-		HashMap<String, Set<Integer>> innerData;
-		Set<Integer> positions;
+		TreeMap<String, TreeSet<Integer>> innerData;
+		TreeSet<Integer> positions;
 
-		innerData = wordIndex.get(word); // grab inner hash map
-		if (innerData == null) { // it doesn't exist so create it
-			innerData = new HashMap<String, Set<Integer>>();
+		// get inner TreeMap for given word
+		innerData = wordIndex.get(word);
+		// inner TreeMap does not exist so create it
+		if (innerData == null) {
+			innerData = new TreeMap<String, TreeSet<Integer>>();
 		}
 
-		positions = innerData.get(file); // grab inner most set
-		if (positions == null) { // it doesn't exist so create it
-			positions = new HashSet<Integer>();
+		// get inner most TreeSet
+		positions = innerData.get(file);
+		// inner TreeSet does not exist so create it
+		if (positions == null) {
+			positions = new TreeSet<Integer>();
 		}
 
-		positions.add(position); // add index
-		innerData.put(file, positions); // add updated list into innerData
-		wordIndex.put(word, innerData); // add updated innerData into index
+		// add current position to set
+		positions.add(position);
+		// add updated list into innerData
+		innerData.put(file, positions);
+		// add updated innerData into index
+		wordIndex.put(word, innerData);
 	}
 
 	/**
@@ -72,6 +78,7 @@ public class WordIndex {
 	 */
 	public void addAll(String[] words) {
 		addAll(words, 1);
+		// do not know how to use this
 	}
 
 	/**
@@ -88,6 +95,7 @@ public class WordIndex {
 		 * TODO: Add each word using the start position. (You can call your
 		 * other methods here.)
 		 */
+		// do not know how to use this
 	}
 
 	/**
@@ -181,5 +189,9 @@ public class WordIndex {
 	@Override
 	public String toString() {
 		return wordIndex.toString();
+	}
+
+	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> get() {
+		return this.wordIndex;
 	}
 }

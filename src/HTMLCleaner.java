@@ -27,7 +27,7 @@ public class HTMLCleaner {
 	 */
 	public static String stripEntities(String html) {
 		// TODO
-		// if & followed by some non-white space then replace
+		// if & is followed by some non-white space then replace
 		return html.replaceAll("&\\S.*?;", " ");
 	}
 
@@ -84,6 +84,18 @@ public class HTMLCleaner {
 	}
 
 	/**
+	 * Further removes special characters not covered before
+	 *
+	 * @param html
+	 *            text including HTML to remove
+	 * @return text as String
+	 */
+	public static String deepClean(String html) {
+		// TODO
+		return html.replaceAll("[.|,|?|!|\"]"," ");
+	}
+	
+	/**
 	 * Removes all HTML (including any CSS and JavaScript).
 	 *
 	 * @param html
@@ -96,10 +108,15 @@ public class HTMLCleaner {
 		html = stripElement(html, "head");
 		html = stripElement(html, "style");
 		html = stripElement(html, "script");
+		html = stripElement(html, "title");
 
 		html = stripTags(html);
 		html = stripEntities(html);
 
+		html = deepClean(html);
+		
+		html = html.toLowerCase();
+		
 		return html;
 	}
 }
