@@ -2,8 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.ArrayList;
 
 public class Driver {
 
@@ -16,7 +15,7 @@ public class Driver {
 
 		arguments = new ArgumentMap(args);
 
-		processPathArgs();
+		processPathArgs(); // need to handle directories recursively
 
 		processIndexArgs();
 
@@ -35,19 +34,31 @@ public class Driver {
 			// no key or value pair found for -path
 			System.out.println(">> processPathArgs() >> You did not enter -path file. Try again.");
 		} else {
-
-			if (pathArgPayload.endsWith(".html") || pathArgPayload.endsWith(".htm")) {
+			Path path = Paths.get(pathArgPayload);
+			File file = new File(path.toString());
+			if (path.toString().matches("(?i).*html") || path.toString().matches("(?i).*htm")) {
 				System.out.println(">> processPathArgs() >> You entered valid .html or .htm file.");
-				// for this file call openFile(path, index)
-				File file = new File(pathArgPayload);
-				openFile(file.toPath());
-			} else if (pathArgPayload.endsWith("/")) {
+				System.out.println(">> processPathArgs() >> Getting file " + file.toPath().toString());
+				index = WordIndexBuilder.buildIndex(file.toPath());
+			} else if (file.isDirectory()) {
 				System.out.println(">> processPathArgs() >> You entered a valid directory.");
-				// for every file call openFile(path, index)
+
 				File directory = new File(pathArgPayload);
 				File[] listOfFiles = directory.listFiles();
-				for (File file : listOfFiles) {
-					openFile(file.toPath());
+
+				determineFiles(directory);
+
+				int count = 0;
+				for (File master : masterListOfFiles) {
+
+					if (count == 0) {
+						System.out.println(">> processPathArgs() >> Getting file " + master.toPath().toString());
+						index = WordIndexBuilder.buildIndex(master.toPath());
+					} else {
+						System.out.println(">> processPathArgs() >> Getting file " + master.toPath().toString());
+						WordIndexBuilder.buildIndex(master.toPath(), index);
+					}
+					count++;
 				}
 			} else {
 				System.out.println(">> processPathArgs() >> You did not enter a valid directory, .html or .htm file.");
@@ -56,9 +67,25 @@ public class Driver {
 		System.out.println(">> processPathArgs() >> end");
 	}
 
+	public static ArrayList<File> masterListOfFiles = new ArrayList<File>();
+
+	// recursion to find all files
+	private static void determineFiles(File d) {
+		File[] listOfFiles = d.listFiles();
+		for (File file : listOfFiles) {
+			if (file.isDirectory()) {
+				determineFiles(file);
+			} else {
+				if (file.toPath().toString().matches("(?i).*html") || file.toPath().toString().matches("(?i).*htm"))
+					masterListOfFiles.add(file);
+			}
+		}
+
+	}
+
 	private static void openFile(Path p) throws IOException {
 		System.out.println(">> processPathArgs() >> openFile() >> Getting file " + p.toString());
-		index = WordIndexBuilder.buildIndex(p);
+		WordIndexBuilder.buildIndex(p, index);
 	}
 
 	private static void processIndexArgs() throws IOException {

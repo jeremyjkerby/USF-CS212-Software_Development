@@ -92,7 +92,7 @@ public class HTMLCleaner {
 	 */
 	public static String deepClean(String html) {
 		// TODO
-		return html.replaceAll("[.|,|?|!|\"]"," ");
+		return html.replaceAll("[|.|[=>]|:|\\d|_|,|?|!|@|\n|\"]"," ");
 	}
 	
 	/**
@@ -105,6 +105,8 @@ public class HTMLCleaner {
 	public static String stripHTML(String html) {
 		html = stripComments(html);
 
+		//html = deepClean(html);
+		
 		html = stripElement(html, "head");
 		html = stripElement(html, "style");
 		html = stripElement(html, "script");

@@ -73,8 +73,8 @@ public class JSONWriter {
 			}
 		}
 
-		writer.append(indent(level) + "]\n");
-		System.out.print(indent(level) + "]\n");
+		writer.append(indent(level) + "]");
+		System.out.print(indent(level) + "]");
 
 	}
 
@@ -166,56 +166,33 @@ public class JSONWriter {
 				writer.append(indent(1) + quote(key) + ": {");
 				TreeMap<String, TreeSet<Integer>> innerData = elements.get(key);
 				Set<String> innerKeys = innerData.keySet();
+				int size2 = innerKeys.size();
+				int k2 = 1;
 				for (String ik : innerKeys) {
-					System.out.print("\n" + indent(2) + quote(ik) + ": ");
-					writer.append("\n" + indent(2) + quote(ik) + ": ");
-					asArray(writer, innerData.get(ik), 2);
-					if (k == size-1) {
-						System.out.print(indent(1) + "},\n");
-						writer.append(indent(1) + "},\n");
-						k++;
+					if (k2 != size2) {
+						System.out.print("\n"+indent(2) + quote(ik) + ": ");
+						writer.append("\n"+indent(2) + quote(ik) + ": ");
+						asArray(writer, innerData.get(ik), 2);
+						System.out.print(",");
+						writer.append(",");
+						k2++;
 					} else {
-						System.out.print(indent(1) + "}\n");
-						writer.append(indent(1) + "}\n");
+						System.out.print("\n"+indent(2) + quote(ik) + ": ");
+						writer.append("\n"+indent(2) + quote(ik) + ": ");
+						asArray(writer, innerData.get(ik), 2);
 					}
 				}
+				if (k != size) {
+					System.out.print("\n" + indent(1) + "},\n");
+					writer.append("\n" + indent(1) + "},\n");
+					k++;
+				} else {
+					System.out.print("\n" + indent(1) + "}\n");
+					writer.append("\n" + indent(1) + "}\n");
+				}
 			}
-			System.out.print("}\n");
-			writer.append("}\n");
-
-			/*
-			 * int level = 2;
-			 * 
-			 * System.out.print(indent(level-2) + "{\n");
-			 * writer.append(indent(level-2) + "{\n");
-			 * 
-			 * int size = elements.size(); int n = 1;
-			 * 
-			 * 
-			 * 
-			 * Set<String> keys = elements.keySet(); for (String key : keys) {
-			 * TreeSet<Integer> myset = elements.get(key); if (n == size) {
-			 * //System.out.print(">>myset : " + myset);
-			 * System.out.print(indent(level) + quote(key) + ": ");
-			 * writer.append(indent(level) + quote(key) + ": ");
-			 * 
-			 * asArray(writer, myset, 2);
-			 * 
-			 * System.out.print("\n"); writer.append("\n");
-			 * 
-			 * 
-			 * } else { //System.out.print(">>myset : " + myset);
-			 * System.out.print(indent(level) + quote(key) + ": ");
-			 * writer.append(indent(level) + quote(key) + ": ");
-			 * 
-			 * asArray(writer, myset, 2);
-			 * 
-			 * System.out.print(",\n"); writer.append(",\n"); n++;
-			 * 
-			 * }
-			 * 
-			 * }
-			 */
+			System.out.print("}");
+			writer.append("}");
 		}
 	}
 }

@@ -79,15 +79,21 @@ public class WordIndexBuilder {
 			System.out.println(">> buildIndex() >> data after" + masterString);
 
 			// split the text into individual words by spaces
-			String words[] = masterString.split(" ");
+			String words[] = WordParser.parseWords(masterString);
+
+			// for (int i = 0; i < words.length; i++) // test code
+			// System.out.println(">> buildIndex() >> my words after I will
+			// store >> " + words[i]); // test code
+
 			for (int i = 0; i < words.length; i++) {
 				// if word[i] is an actual word than add it and increase
 				// masterIndex by one
-				if (!words[i].equals(" ") && !words[i].equals("") && words[i].matches("\\w*")) {
-					index.add(words[i], path.toString(), masterIndex);
-					masterIndex++;
-				}
+				// if ((!words[i].equals(" ") && !words[i].equals("") &&
+				// words[i].matches("\\w*")) || words[i].matches("antelöpé")) {
+				index.add(words[i], path.toString(), masterIndex);
+				masterIndex++;
 			}
+			// }
 			System.out.println(">> buildIndex() >> Current index " + index.toString());
 		}
 		System.out.println(">> buildIndex() >> end");
