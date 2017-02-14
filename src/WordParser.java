@@ -1,6 +1,6 @@
 /*
  * Jeremy Kerby
- * CS212 Lab: Word Index
+ * Imported from Lab: Word Index
  */
 
 import java.text.Normalizer;

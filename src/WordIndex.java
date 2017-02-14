@@ -91,10 +91,6 @@ public class WordIndex {
 	 *            starting position
 	 */
 	public void addAll(String[] words, int start) {
-		/*
-		 * TODO: Add each word using the start position. (You can call your
-		 * other methods here.)
-		 */
 		// do not know how to use this
 	}
 
@@ -107,9 +103,6 @@ public class WordIndex {
 	 * @return number of times the word was found
 	 */
 	public int count(String word) {
-		/*
-		 * TODO: Return the count.
-		 */
 		if (wordIndex.get(word) != null)
 			return wordIndex.get(word).size();
 		else
@@ -122,9 +115,6 @@ public class WordIndex {
 	 * @return number of words
 	 */
 	public int words() {
-		/*
-		 * TODO: Return number of words. No counting is necessary!
-		 */
 		return wordIndex.size();
 	}
 
@@ -136,9 +126,6 @@ public class WordIndex {
 	 * @return true if the word is stored in the index
 	 */
 	public boolean contains(String word) {
-		/*
-		 * TODO: Return whether the word is in the index.
-		 */
 		return wordIndex.containsKey(word) ? true : false;
 	}
 
@@ -151,11 +138,6 @@ public class WordIndex {
 	 * @see Collections#sort(List)
 	 */
 	public List<String> copyWords() {
-		/*
-		 * TODO: Create a copy of the words in the index as a list, and sort
-		 * before returning.
-		 */
-		// return null;
 		List<String> words = new ArrayList<String>(wordIndex.keySet());
 		words.sort(null);
 		return words;
@@ -174,10 +156,6 @@ public class WordIndex {
 	 * @see Collections#sort(List)
 	 */
 	public List<Integer> copyPositions(String word, String file) {
-		/*
-		 * TODO: Create a copy of the positions for the word, and sort before
-		 * returning.
-		 */
 		List<Integer> words = new ArrayList<Integer>(wordIndex.get(word).get(file));
 		Collections.sort(words);
 		return words;

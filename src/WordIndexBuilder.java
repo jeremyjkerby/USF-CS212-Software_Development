@@ -51,13 +51,11 @@ public class WordIndexBuilder {
 	 * @see StandardCharsets#UTF_8
 	 */
 	public static void buildIndex(Path path, WordIndex index) throws IOException {
-		/*
-		 * TODO: Fill this in using a BufferedReader and try-with-resources
-		 * block.
-		 */
-		System.out.println(">> buildIndex() >> start");
-		System.out.println(">> buildIndex() >> Working file " + path.toString());
-		System.out.println(">> buildIndex() >> Current index " + index.toString());
+		// System.out.println(">> buildIndex() >> start");
+		// System.out.println(">> buildIndex() >> Working file " +
+		// path.toString());
+		// System.out.println(">> buildIndex() >> Current index " +
+		// index.toString());
 
 		HTMLCleaner htmlCleaner = new HTMLCleaner();
 
@@ -74,58 +72,56 @@ public class WordIndexBuilder {
 				masterString += curChar;
 			}
 
-			System.out.println(">> buildIndex() >> data before" + masterString);
+			// System.out.println(">> buildIndex() >> data before" +
+			// masterString);
 
 			// process masterString for entry
 			masterString = htmlCleaner.stripHTML(masterString);
 
-			System.out.println(">> buildIndex() >> data after" + masterString);
+			// System.out.println(">> buildIndex() >> data after" +
+			// masterString);
 
 			// split the text into individual words by spaces
 			String words[] = WordParser.parseWords(masterString);
 
-			// for (int i = 0; i < words.length; i++) // test code
-			// System.out.println(">> buildIndex() >> my words after I will
-			// store >> " + words[i]); // test code
-
 			for (int i = 0; i < words.length; i++) {
-				// if word[i] is an actual word than add it and increase
-				// masterIndex by one
-				// if ((!words[i].equals(" ") && !words[i].equals("") &&
-				// words[i].matches("\\w*")) || words[i].matches("antelöpé")) {
 				index.add(words[i], path.toString(), masterIndex);
 				masterIndex++;
 			}
-			// }
-			System.out.println(">> buildIndex() >> Current index " + index.toString());
+
+			// System.out.println(">> buildIndex() >> Current index " +
+			// index.toString());
 		}
-		System.out.println(">> buildIndex() >> end");
+		// System.out.println(">> buildIndex() >> end");
 	}
 
 	public WordIndex processPathArgs(ArgumentMap arguments) throws IOException {
-		System.out.println(">> processPathArgs() >> start");
+		// System.out.println(">> processPathArgs() >> start");
 
-		System.out.println(">> processPathArgs() >> current arguments >> " + arguments.toString());
+		// System.out.println(">> processPathArgs() >> current arguments >> " +
+		// arguments.toString());
 
 		WordIndex index = null;
-		
 		String pathArgPayload = arguments.getString("-path");
 
 		if (pathArgPayload == null) {
 			// no key or value pair found for -path
-			System.out.println(">> processPathArgs() >> You did not enter -path file. Try again.");
+			// System.out.println(">> processPathArgs() >> You did not enter
+			// -path file. Try again.");
 		} else {
 			Path path = Paths.get(pathArgPayload);
 			File file = new File(path.toString());
 			if (path.toString().matches("(?i).*html") || path.toString().matches("(?i).*htm")) {
-				System.out.println(">> processPathArgs() >> You entered valid .html or .htm file.");
-				System.out.println(">> processPathArgs() >> Getting file " + file.toPath().toString());
+				// System.out.println(">> processPathArgs() >> You entered valid
+				// .html or .htm file.");
+				// System.out.println(">> processPathArgs() >> Getting file " +
+				// file.toPath().toString());
 				index = WordIndexBuilder.buildIndex(file.toPath());
 			} else if (file.isDirectory()) {
-				System.out.println(">> processPathArgs() >> You entered a valid directory.");
+				// System.out.println(">> processPathArgs() >> You entered a
+				// valid directory.");
 
 				File directory = new File(pathArgPayload);
-				File[] listOfFiles = directory.listFiles();
 
 				determineFiles(directory);
 
@@ -133,19 +129,21 @@ public class WordIndexBuilder {
 				for (File master : masterListOfFiles) {
 
 					if (count == 0) {
-						System.out.println(">> processPathArgs() >> Getting file " + master.toPath().toString());
+						// System.out.println(">> processPathArgs() >> Getting
+						// file " + master.toPath().toString());
 						index = WordIndexBuilder.buildIndex(master.toPath());
 					} else {
-						System.out.println(">> processPathArgs() >> Getting file " + master.toPath().toString());
+						//System.out.println(">> processPathArgs() >> Getting file " + master.toPath().toString());
 						WordIndexBuilder.buildIndex(master.toPath(), index);
 					}
 					count++;
 				}
 			} else {
-				System.out.println(">> processPathArgs() >> You did not enter a valid directory, .html or .htm file.");
+				// System.out.println(">> processPathArgs() >> You did not enter
+				// a valid directory, .html or .htm file.");
 			}
 		}
-		System.out.println(">> processPathArgs() >> end");
+		// System.out.println(">> processPathArgs() >> end");
 		return index;
 	}
 
@@ -158,6 +156,7 @@ public class WordIndexBuilder {
 			if (file.isDirectory()) {
 				determineFiles(file);
 			} else {
+				// only consider .html or .htm files
 				if (file.toPath().toString().matches("(?i).*html") || file.toPath().toString().matches("(?i).*htm"))
 					masterListOfFiles.add(file);
 			}

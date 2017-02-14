@@ -53,8 +53,7 @@ public class ArgumentMap {
 			} else {
 				// args[i] is not a flag
 				if (FLAG == true) { // prev arg was flag so this is its value
-					arguments.putIfAbsent(args[i - 1], args[i]); // save value
-																	// to prev
+					arguments.putIfAbsent(args[i - 1], args[i]);
 					FLAG = false;
 				}
 			}
@@ -62,6 +61,7 @@ public class ArgumentMap {
 	}
 
 	/**
+	 * Verify given string is valid flag.
 	 *
 	 * @param arg
 	 * @return
@@ -73,6 +73,7 @@ public class ArgumentMap {
 	}
 
 	/**
+	 * Verify given string is valid value.
 	 *
 	 * @param arg
 	 * @return

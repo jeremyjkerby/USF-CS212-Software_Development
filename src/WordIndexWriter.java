@@ -12,27 +12,27 @@ public class WordIndexWriter {
 
 	public static void writeIndex(WordIndex index, Path path) throws IOException {
 
-		System.out.println(">> writeIndex() >> start");
+		//System.out.println(">> writeIndex() >> start");
 
 		if (index == null) {
-			System.out.println(">> writeIndex() >> My data was nulll");
+			//System.out.println(">> writeIndex() >> My data was nulll");
 			try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 				writer.write("");
 			}
 		} else {
-			System.out.println(">> writeIndex() >> My data is still " + index.toString());
+			//System.out.println(">> writeIndex() >> My data is still " + index.toString());
 			JSONWriter.asNestedObject(index.get(), path);
-			System.out.println(">> writeIndex() >> end");
+			//System.out.println(">> writeIndex() >> end");
 		}
 
 	}
 
 	public void processIndexArgs(WordIndex index, ArgumentMap arguments) throws IOException {
-		System.out.println(">> processIndexArgs() >> start");
+		//System.out.println(">> processIndexArgs() >> start");
 
 		if (arguments.hasFlag("-index") == false) {
 			// no key or value pair found for -index do not save anything
-			System.out.println(">> processIndexArgs() >> You did not enter -index file. No output file produced.");
+			//System.out.println(">> processIndexArgs() >> You did not enter -index file. No output file produced.");
 		} else {
 			String indexArgPayload = arguments.getString("-index");
 			if (indexArgPayload == null) {
@@ -46,11 +46,11 @@ public class WordIndexWriter {
 				saveFile(index, indexArgPayload);
 			}
 		}
-		System.out.println(">> processIndexArgs() >> end");
+		//System.out.println(">> processIndexArgs() >> end");
 	}
 
 	private static void saveFile(WordIndex index, String p) throws IOException {
-		System.out.println(">> processIndexArgs() >> saveFile() >> Saving file " + p);
+		//System.out.println(">> processIndexArgs() >> saveFile() >> Saving file " + p);
 		Path path = Paths.get(p);
 		WordIndexWriter.writeIndex(index, path);
 	}
