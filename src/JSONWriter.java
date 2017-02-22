@@ -57,6 +57,7 @@ public class JSONWriter {
 		writer.append("[\n");
 		//System.out.print("[\n");
 
+		// TODO Try to avoid copying and converting our data
 		Integer data[] = elements.toArray(new Integer[elements.size()]);
 
 		for (int i = 0; i < data.length; i++) {
@@ -68,12 +69,17 @@ public class JSONWriter {
 				//System.out.print(indent(level + 1) + data[i] + "\n");
 			}
 		}
+		
+		// TODO To track if you are at the last element:
+		// use an iterator, for each with a counter, or use the methods in treeset
 
 		writer.append(indent(level) + "]");
 		//System.out.print(indent(level) + "]");
 
 	}
 
+	// TODO Actually implementing these methods makes your code more general
+	
 	/**
 	 * Writes the set of elements as a JSON array to the path using UTF8.
 	 *
@@ -100,6 +106,7 @@ public class JSONWriter {
 		// not used
 	}
 
+	// TODO Try out the treemap methods here too
 	/**
 	 * Writes the set of elements as a JSON object with a nested array to the
 	 * path using UTF8.

@@ -7,9 +7,11 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Map; // TODO Configure Eclipse to remove unused imports on save
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+// TODO Rename to InvertedIndex
 
 /**
  * Nested data structure to store strings found and the files and positions they
@@ -20,6 +22,7 @@ public class WordIndex {
 	/**
 	 * Stores a mapping of words to the positions the words were found.
 	 */
+	// TODO Make this final
 	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
 
 	/**
@@ -169,7 +172,15 @@ public class WordIndex {
 		return wordIndex.toString();
 	}
 
+	// TODO This breaks encapsulation, have to remove it.
+	
 	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> get() {
 		return this.wordIndex;
 	}
+	
+	/* TODO 
+	public void toJSON(Path path) {
+		JSONWriter.asSomething(wordIndex, path);
+	}
+	*/ 
 }
