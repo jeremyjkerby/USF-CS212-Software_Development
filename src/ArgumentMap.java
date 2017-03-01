@@ -67,11 +67,7 @@ public class ArgumentMap {
 	 * @return
 	 */
 	public static boolean isFlag(String arg) {
-		if (arg == null) {
-			return false;
-		}
-		// TODO "-\\w+"
-		return (arg.matches("-[[-]a-zA-Z0-9].*") ? true : false);
+		return ((arg != null) && (arg.matches("-\\w+")) ? true : false);
 	}
 
 	/**
@@ -81,11 +77,7 @@ public class ArgumentMap {
 	 * @return
 	 */
 	public static boolean isValue(String arg) {
-		if (arg == null) {
-			return false;
-		}
-		// TODO return arg != null && arg.matches(...) ?
-		return (arg.matches("[^-\\s].*") ? true : false);
+		return ((arg != null) && (arg.matches("[^-\\s].*"))) ? true : false;
 	}
 
 	/**
@@ -165,19 +157,11 @@ public class ArgumentMap {
 	 */
 	public int getInteger(String flag, int defaultValue) {
 		String data = arguments.get(flag);
-
-		/*
-		 * TODO try { return Integer.parseInt(data); } catch (Exception e) {
-		 * return defaultValue; }
-		 */
-
-		int answer;
-		if (data == null || !data.matches("[0-9]")) {
-			answer = defaultValue;
-		} else {
-			answer = Integer.parseInt(data);
+		try {
+			return Integer.parseInt(data);
+		} catch (Exception e) {
+			return defaultValue;
 		}
-		return answer;
 	}
 
 	@Override

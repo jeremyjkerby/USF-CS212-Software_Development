@@ -19,8 +19,7 @@ public class InvertedIndex {
 	/**
 	 * Stores a mapping of words to the positions the words were found.
 	 */
-	// TODO Make this final
-	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
+	final private TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
 
 	/**
 	 * Initializes the index. For every key (word) of the outer HashMap the
