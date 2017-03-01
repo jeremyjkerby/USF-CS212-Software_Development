@@ -44,6 +44,9 @@ public class ArgumentMap {
 	 *            command line arguments
 	 */
 	public void parse(String[] args) {
+		// TODO Only identifiers that are uppercase are "constants" 
+		// TODO Use the refactor feature in Eclipse
+		
 		boolean FLAG = false;
 		for (int i = 0; i < args.length; i++) {
 			if (isFlag(args[i]) == true) { // verify if flag
@@ -69,6 +72,7 @@ public class ArgumentMap {
 	public static boolean isFlag(String arg) {
 		if (arg == null)
 			return false;
+		// TODO "-\\w+"
 		return (arg.matches("-[[-]a-zA-Z0-9].*") ? true : false);
 	}
 
@@ -81,6 +85,7 @@ public class ArgumentMap {
 	public static boolean isValue(String arg) {
 		if (arg == null)
 			return false;
+		// TODO return arg != null && arg.matches(...) ? 
 		return (arg.matches("[^-\\s].*") ? true : false);
 	}
 
@@ -147,6 +152,10 @@ public class ArgumentMap {
 		return (data == null) ? data = defaultValue : data;
 	}
 
+	// TODO Avoid writing if/else blocks without { }
+	// TODO The one-line semi-colon style is famous for bugs
+	// TODO Eclipse can also be configured to always add braces for you
+	
 	/**
 	 * Returns the value for the specified flag as an int value. If the flag is
 	 * missing or the flag does not have a value, returns the specified default
@@ -161,6 +170,16 @@ public class ArgumentMap {
 	 */
 	public int getInteger(String flag, int defaultValue) {
 		String data = arguments.get(flag);
+		
+		/* TODO
+		try {
+			return Integer.parseInt(data);
+		}
+		catch (Exception e) {
+			return defaultValue;
+		}
+		*/
+		
 		int answer;
 		if (data == null || !data.matches("[0-9]"))
 			answer = defaultValue;

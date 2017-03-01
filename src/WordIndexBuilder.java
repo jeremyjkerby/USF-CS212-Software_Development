@@ -61,7 +61,7 @@ public class WordIndexBuilder {
 
 		// using the UTF-8 character encoding for all file processing
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-			String line = "";
+			String line = ""; // TODO Could maybe remove?
 			int masterIndex = 1; // the positions should start at 1
 			String masterString = "";
 			int curInt;
@@ -75,6 +75,7 @@ public class WordIndexBuilder {
 			// System.out.println(">> buildIndex() >> data before" +
 			// masterString);
 
+			// TODO Always use classname to access a static method
 			// process masterString for entry
 			masterString = htmlCleaner.stripHTML(masterString);
 
