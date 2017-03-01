@@ -6,25 +6,28 @@ import java.io.IOException;
 
 // TODO Resolve your old TODO comments
 // TODO Always resolve any warnings in your project
-// TODO All classes and methods to have Javadoc comments (including Driver)
 
+/**
+ * 
+ * @author Jeremy Kerby
+ *
+ */
 public class Driver {
 
 	// TODO Should never throw an exception... can throw EVERYWHERE else but here
+	/**
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
 		// System.out.println(">> main() >> start");
 
-		// TODO No need to split the declaration and definition for local variables
-		ArgumentMap arguments;
-		WordIndex index;
-		WordIndexBuilder wib;
-		WordIndexWriter wiw;
+		ArgumentMap arguments = new ArgumentMap(args);
+		InvertedIndex index = new InvertedIndex();
+		WordIndexBuilder wib = new WordIndexBuilder();
+		WordIndexWriter wiw = new WordIndexWriter();
 		WordIndexBuilder.masterListOfFiles.clear();
-
-		arguments = new ArgumentMap(args);
-		wib = new WordIndexBuilder();
-		wiw = new WordIndexWriter();
-		index = new WordIndex();
 
 		// System.out.println(arguments.toString());
 

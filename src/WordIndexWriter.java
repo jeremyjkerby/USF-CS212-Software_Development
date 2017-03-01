@@ -6,11 +6,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Convenience class to write a {@link WordIndex} to a text file.
+ * Convenience class to write a {@link InvertedIndex} to a text file.
  */
 public class WordIndexWriter {
 
-	public static void writeIndex(WordIndex index, Path path) throws IOException {
+	/**
+	 * Writes index data structure to file
+	 * @param index
+	 * @param path
+	 * @throws IOException
+	 */
+	public static void writeIndex(InvertedIndex index, Path path) throws IOException {
 
 		//System.out.println(">> writeIndex() >> start");
 
@@ -27,7 +33,13 @@ public class WordIndexWriter {
 
 	}
 
-	public void processIndexArgs(WordIndex index, ArgumentMap arguments) throws IOException {
+	/**
+	 * Processes given arguments and executes related action
+	 * @param index
+	 * @param arguments
+	 * @throws IOException
+	 */
+	public void processIndexArgs(InvertedIndex index, ArgumentMap arguments) throws IOException {
 		//System.out.println(">> processIndexArgs() >> start");
 
 		if (arguments.hasFlag("-index") == false) {
@@ -49,7 +61,13 @@ public class WordIndexWriter {
 		//System.out.println(">> processIndexArgs() >> end");
 	}
 
-	private static void saveFile(WordIndex index, String p) throws IOException {
+	/**
+	 * Helper method to assist in saving a data to file
+	 * @param index
+	 * @param p
+	 * @throws IOException
+	 */
+	private static void saveFile(InvertedIndex index, String p) throws IOException {
 		//System.out.println(">> processIndexArgs() >> saveFile() >> Saving file " + p);
 		Path path = Paths.get(p);
 		WordIndexWriter.writeIndex(index, path);

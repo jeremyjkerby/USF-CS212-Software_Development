@@ -15,6 +15,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+/**
+ * Writes valid JSON to file beautifully
+ * @author Jeremy Kerby
+ *
+ */
 public class JSONWriter {
 
 	/**

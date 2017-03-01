@@ -11,13 +11,11 @@ import java.util.Map; // TODO Configure Eclipse to remove unused imports on save
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-// TODO Rename to InvertedIndex
-
 /**
  * Nested data structure to store strings found and the files and positions they
  * were found.
  */
-public class WordIndex {
+public class InvertedIndex {
 
 	/**
 	 * Stores a mapping of words to the positions the words were found.
@@ -30,7 +28,7 @@ public class WordIndex {
 	 * value is an inner HashMap. For every key (file) of inner HashMap the
 	 * value is a Set of Integer.
 	 */
-	public WordIndex() {
+	public InvertedIndex() {
 		wordIndex = new TreeMap<String, TreeMap<String, TreeSet<Integer>>>();
 	}
 

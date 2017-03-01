@@ -84,18 +84,6 @@ public class HTMLCleaner {
 	}
 
 	/**
-	 * Further removes special characters not covered before
-	 *
-	 * @param html
-	 *            text including HTML to remove
-	 * @return text as String
-	 */
-	public static String deepClean(String html) {
-		// TODO
-		return html.replaceAll("[|.|[=>]|:|\\d|_|,|?|!|@|\n|\"]"," ");
-	}
-	
-	/**
 	 * Removes all HTML (including any CSS and JavaScript).
 	 *
 	 * @param html
@@ -105,8 +93,6 @@ public class HTMLCleaner {
 	public static String stripHTML(String html) {
 		html = stripComments(html);
 
-		//html = deepClean(html);
-		
 		html = stripElement(html, "head");
 		html = stripElement(html, "style");
 		html = stripElement(html, "script");
@@ -115,10 +101,8 @@ public class HTMLCleaner {
 		html = stripTags(html);
 		html = stripEntities(html);
 
-		html = deepClean(html);
-		
 		html = html.toLowerCase();
-		
+
 		return html;
 	}
 }

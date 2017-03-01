@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
- * Convenience class to build a {@link WordIndex} from a text file.
+ * Convenience class to build a {@link InvertedIndex} from a text file.
  */
 public class WordIndexBuilder {
 
@@ -27,10 +27,10 @@ public class WordIndexBuilder {
 	 * @return word index containing words from the path
 	 * @throws IOException
 	 *
-	 * @see {@link #buildIndex(Path, WordIndex)}
+	 * @see {@link #buildIndex(Path, InvertedIndex)}
 	 */
-	public static WordIndex buildIndex(Path path) throws IOException {
-		WordIndex index = new WordIndex();
+	public static InvertedIndex buildIndex(Path path) throws IOException {
+		InvertedIndex index = new InvertedIndex();
 		buildIndex(path, index);
 		return index;
 	}
@@ -50,7 +50,7 @@ public class WordIndexBuilder {
 	 * @see Files#newBufferedReader(Path, java.nio.charset.Charset)
 	 * @see StandardCharsets#UTF_8
 	 */
-	public static void buildIndex(Path path, WordIndex index) throws IOException {
+	public static void buildIndex(Path path, InvertedIndex index) throws IOException {
 		// System.out.println(">> buildIndex() >> start");
 		// System.out.println(">> buildIndex() >> Working file " +
 		// path.toString());
@@ -96,13 +96,13 @@ public class WordIndexBuilder {
 		// System.out.println(">> buildIndex() >> end");
 	}
 
-	public WordIndex processPathArgs(ArgumentMap arguments) throws IOException {
+	public InvertedIndex processPathArgs(ArgumentMap arguments) throws IOException {
 		// System.out.println(">> processPathArgs() >> start");
 
 		// System.out.println(">> processPathArgs() >> current arguments >> " +
 		// arguments.toString());
 
-		WordIndex index = null;
+		InvertedIndex index = null;
 		String pathArgPayload = arguments.getString("-path");
 
 		if (pathArgPayload == null) {
