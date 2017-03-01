@@ -134,7 +134,8 @@ public class WordIndexBuilder {
 						// file " + master.toPath().toString());
 						index = WordIndexBuilder.buildIndex(master.toPath());
 					} else {
-						//System.out.println(">> processPathArgs() >> Getting file " + master.toPath().toString());
+						// System.out.println(">> processPathArgs() >> Getting
+						// file " + master.toPath().toString());
 						WordIndexBuilder.buildIndex(master.toPath(), index);
 					}
 					count++;
@@ -158,8 +159,9 @@ public class WordIndexBuilder {
 				determineFiles(file);
 			} else {
 				// only consider .html or .htm files
-				if (file.toPath().toString().matches("(?i).*html") || file.toPath().toString().matches("(?i).*htm"))
+				if (file.toPath().toString().matches("(?i).*html") || file.toPath().toString().matches("(?i).*htm")) {
 					masterListOfFiles.add(file);
+				}
 			}
 		}
 

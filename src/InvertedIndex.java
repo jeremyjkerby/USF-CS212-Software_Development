@@ -104,10 +104,11 @@ public class InvertedIndex {
 	 * @return number of times the word was found
 	 */
 	public int count(String word) {
-		if (wordIndex.get(word) != null)
+		if (wordIndex.get(word) != null) {
 			return wordIndex.get(word).size();
-		else
+		} else {
 			return 0;
+		}
 	}
 
 	/**

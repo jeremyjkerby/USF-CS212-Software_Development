@@ -17,7 +17,6 @@ import java.util.TreeSet;
 
 /**
  * Writes valid JSON to file beautifully
- * @author Jeremy Kerby
  *
  */
 public class JSONWriter {
@@ -60,7 +59,7 @@ public class JSONWriter {
 	private static void asArray(Writer writer, TreeSet<Integer> elements, int level) throws IOException {
 		// special formating, editing the following may give you unwanted output
 		writer.append("[\n");
-		//System.out.print("[\n");
+		// System.out.print("[\n");
 
 		// TODO Try to avoid copying and converting our data
 		Integer data[] = elements.toArray(new Integer[elements.size()]);
@@ -68,23 +67,24 @@ public class JSONWriter {
 		for (int i = 0; i < data.length; i++) {
 			if (i != data.length - 1) {
 				writer.append(indent(level + 1) + data[i] + ",\n");
-				//System.out.print(indent(level + 1) + data[i] + ",\n");
+				// System.out.print(indent(level + 1) + data[i] + ",\n");
 			} else {
 				writer.append(indent(level + 1) + data[i] + "\n");
-				//System.out.print(indent(level + 1) + data[i] + "\n");
+				// System.out.print(indent(level + 1) + data[i] + "\n");
 			}
 		}
-		
+
 		// TODO To track if you are at the last element:
-		// use an iterator, for each with a counter, or use the methods in treeset
+		// use an iterator, for each with a counter, or use the methods in
+		// treeset
 
 		writer.append(indent(level) + "]");
-		//System.out.print(indent(level) + "]");
+		// System.out.print(indent(level) + "]");
 
 	}
 
 	// TODO Actually implementing these methods makes your code more general
-	
+
 	/**
 	 * Writes the set of elements as a JSON array to the path using UTF8.
 	 *
@@ -131,10 +131,10 @@ public class JSONWriter {
 
 			int size = keys.size();
 			int k = 1;
-			//System.out.print("{\n");
+			// System.out.print("{\n");
 			writer.append("{\n");
 			for (String key : keys) {
-				//System.out.print(indent(1) + quote(key) + ": {");
+				// System.out.print(indent(1) + quote(key) + ": {");
 				writer.append(indent(1) + quote(key) + ": {");
 				TreeMap<String, TreeSet<Integer>> innerData = elements.get(key);
 				Set<String> innerKeys = innerData.keySet();
@@ -142,28 +142,30 @@ public class JSONWriter {
 				int k2 = 1;
 				for (String ik : innerKeys) {
 					if (k2 != size2) {
-						//System.out.print("\n" + indent(2) + quote(ik) + ": ");
+						// System.out.print("\n" + indent(2) + quote(ik) + ":
+						// ");
 						writer.append("\n" + indent(2) + quote(ik) + ": ");
 						asArray(writer, innerData.get(ik), 2);
-						//System.out.print(",");
+						// System.out.print(",");
 						writer.append(",");
 						k2++;
 					} else {
-						//System.out.print("\n" + indent(2) + quote(ik) + ": ");
+						// System.out.print("\n" + indent(2) + quote(ik) + ":
+						// ");
 						writer.append("\n" + indent(2) + quote(ik) + ": ");
 						asArray(writer, innerData.get(ik), 2);
 					}
 				}
 				if (k != size) {
-					//System.out.print("\n" + indent(1) + "},\n");
+					// System.out.print("\n" + indent(1) + "},\n");
 					writer.append("\n" + indent(1) + "},\n");
 					k++;
 				} else {
-					//System.out.print("\n" + indent(1) + "}\n");
+					// System.out.print("\n" + indent(1) + "}\n");
 					writer.append("\n" + indent(1) + "}\n");
 				}
 			}
-			//System.out.print("}");
+			// System.out.print("}");
 			writer.append("}");
 		}
 	}
