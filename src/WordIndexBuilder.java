@@ -57,11 +57,8 @@ public class WordIndexBuilder {
 		// System.out.println(">> buildIndex() >> Current index " +
 		// index.toString());
 
-		HTMLCleaner htmlCleaner = new HTMLCleaner();
-
 		// using the UTF-8 character encoding for all file processing
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-			String line = ""; // TODO Could maybe remove?
 			int masterIndex = 1; // the positions should start at 1
 			String masterString = "";
 			int curInt;
@@ -75,9 +72,8 @@ public class WordIndexBuilder {
 			// System.out.println(">> buildIndex() >> data before" +
 			// masterString);
 
-			// TODO Always use classname to access a static method
 			// process masterString for entry
-			masterString = htmlCleaner.stripHTML(masterString);
+			masterString = HTMLCleaner.stripHTML(masterString);
 
 			// System.out.println(">> buildIndex() >> data after" +
 			// masterString);

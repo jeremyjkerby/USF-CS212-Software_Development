@@ -1,7 +1,3 @@
-/*
- * Jeremy Kerby
- * Project 1
- */
 import java.io.IOException;
 
 // TODO Resolve your old TODO comments
@@ -14,7 +10,8 @@ import java.io.IOException;
  */
 public class Driver {
 
-	// TODO Should never throw an exception... can throw EVERYWHERE else but here
+	// TODO Should never throw an exception... can throw EVERYWHERE else but
+	// here
 	/**
 	 * 
 	 * @param args
@@ -33,7 +30,7 @@ public class Driver {
 
 		index = wib.processPathArgs(arguments); // load
 
-		wiw.processIndexArgs(index, arguments); // save 
+		wiw.processIndexArgs(index, arguments); // save
 
 		// System.out.println(">> main() >> end");
 

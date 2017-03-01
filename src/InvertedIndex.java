@@ -7,7 +7,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map; // TODO Configure Eclipse to remove unused imports on save
 import java.util.TreeMap;
 import java.util.TreeSet;
 
