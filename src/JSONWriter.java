@@ -66,7 +66,7 @@ public class JSONWriter {
 			writer.append(indent(level + 1) + data);
 			if (it.hasNext()) {
 				writer.append(",");
-			} 
+			}
 			writer.append("\n");
 		}
 		writer.append(indent(level) + "]");
@@ -100,34 +100,24 @@ public class JSONWriter {
 	public static void asObject(TreeMap<String, Integer> elements, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			int level = 1;
-
-			// System.out.print("{\n");
 			writer.write("{\n");
 
-			int size = elements.size();
-			int n = 1;
-
 			Set<String> keys = elements.keySet();
-			for (String key : keys) {
-				if (n == size) {
-					// System.out.print(indent(level) + quote(key) + ": " +
-					// elements.get(key) + "\n");
-					writer.write(indent(level) + quote(key) + ": " + elements.get(key) + "\n");
-				} else {
-					// System.out.print(indent(level) + quote(key) + ": " +
-					// elements.get(key) + ",\n");
-					writer.write(indent(level) + quote(key) + ": " + elements.get(key) + ",\n");
-					n++;
+			Iterator<String> it = keys.iterator();
+
+			while (it.hasNext()) {
+				String data = it.next();
+				writer.write(indent(level) + quote(data) + ": " + elements.get(data));
+				if (it.hasNext()) {
+					writer.append(",");
 				}
+				writer.append("\n");
 			}
 
-			// System.out.print("}\n");
 			writer.write("}");
-
 		}
 	}
 
-	// TODO Try out the treemap methods here too
 	/**
 	 * Writes the set of elements as a JSON object with a nested array to the
 	 * path using UTF8.
@@ -142,46 +132,33 @@ public class JSONWriter {
 			throws IOException {
 		// special formating, editing the following may give you unwanted output
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			writer.append("{\n");
 
 			Set<String> keys = elements.keySet();
+			Iterator<String> it = keys.iterator();
+			while (it.hasNext()) {
+				String data = it.next();
+				writer.append(indent(1) + quote(data) + ": {");
 
-			int size = keys.size();
-			int k = 1;
-			// System.out.print("{\n");
-			writer.append("{\n");
-			for (String key : keys) {
-				// System.out.print(indent(1) + quote(key) + ": {");
-				writer.append(indent(1) + quote(key) + ": {");
-				TreeMap<String, TreeSet<Integer>> innerData = elements.get(key);
+				TreeMap<String, TreeSet<Integer>> innerData = elements.get(data);
 				Set<String> innerKeys = innerData.keySet();
-				int size2 = innerKeys.size();
-				int k2 = 1;
-				for (String ik : innerKeys) {
-					if (k2 != size2) {
-						// System.out.print("\n" + indent(2) + quote(ik) + ":
-						// ");
-						writer.append("\n" + indent(2) + quote(ik) + ": ");
-						asArray(writer, innerData.get(ik), 2);
-						// System.out.print(",");
+				Iterator<String> it2 = innerKeys.iterator();
+
+				while (it2.hasNext()) {
+					String data2 = it2.next();
+					writer.append("\n" + indent(2) + quote(data2) + ": ");
+					asArray(writer, innerData.get(data2), 2);
+					if (it2.hasNext()) {
 						writer.append(",");
-						k2++;
-					} else {
-						// System.out.print("\n" + indent(2) + quote(ik) + ":
-						// ");
-						writer.append("\n" + indent(2) + quote(ik) + ": ");
-						asArray(writer, innerData.get(ik), 2);
 					}
 				}
-				if (k != size) {
-					// System.out.print("\n" + indent(1) + "},\n");
-					writer.append("\n" + indent(1) + "},\n");
-					k++;
-				} else {
-					// System.out.print("\n" + indent(1) + "}\n");
-					writer.append("\n" + indent(1) + "}\n");
+
+				writer.append("\n" + indent(1) + "}");
+				if (it.hasNext()) {
+					writer.append(",");
 				}
+				writer.append("\n");
 			}
-			// System.out.print("}");
 			writer.append("}");
 		}
 	}
