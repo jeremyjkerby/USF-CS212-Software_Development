@@ -26,7 +26,6 @@ public class HTMLCleaner {
 	 * @return text without any HTML entities
 	 */
 	public static String stripEntities(String html) {
-		// TODO
 		// if & is followed by some non-white space then replace
 		return html.replaceAll("&\\S.*?;", " ");
 	}
@@ -40,7 +39,6 @@ public class HTMLCleaner {
 	 * @return text without any HTML comments
 	 */
 	public static String stripComments(String html) {
-		// TODO
 		// enable single line mode then replace comments with white space
 		return html.replaceAll("(?s)<!--.*?-->", " ");
 	}
@@ -54,7 +52,6 @@ public class HTMLCleaner {
 	 * @return text without any HTML tags
 	 */
 	public static String stripTags(String html) {
-		// TODO
 		// enable single line mode then replace tags with white space
 		return html.replaceAll("(?s)<.*?>", " ");
 	}
@@ -77,7 +74,6 @@ public class HTMLCleaner {
 	 * @return text without that HTML element
 	 */
 	public static String stripElement(String html, String name) {
-		// TODO
 		// enable single line mode and ignore case
 		// replace entire element of given name with whitespace
 		return html.replaceAll("(?s)(?i)<" + name + ".*?" + name + "\\s*>", " ");

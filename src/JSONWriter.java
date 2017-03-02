@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -59,31 +60,17 @@ public class JSONWriter {
 	private static void asArray(Writer writer, TreeSet<Integer> elements, int level) throws IOException {
 		// special formating, editing the following may give you unwanted output
 		writer.append("[\n");
-		// System.out.print("[\n");
-
-		// TODO Try to avoid copying and converting our data
-		Integer data[] = elements.toArray(new Integer[elements.size()]);
-
-		for (int i = 0; i < data.length; i++) {
-			if (i != data.length - 1) {
-				writer.append(indent(level + 1) + data[i] + ",\n");
-				// System.out.print(indent(level + 1) + data[i] + ",\n");
-			} else {
-				writer.append(indent(level + 1) + data[i] + "\n");
-				// System.out.print(indent(level + 1) + data[i] + "\n");
-			}
+		Iterator<Integer> it = elements.iterator();
+		while (it.hasNext()) {
+			Integer data = it.next();
+			writer.append(indent(level + 1) + data);
+			if (it.hasNext()) {
+				writer.append(",");
+			} 
+			writer.append("\n");
 		}
-
-		// TODO To track if you are at the last element:
-		// use an iterator, for each with a counter, or use the methods in
-		// treeset
-
 		writer.append(indent(level) + "]");
-		// System.out.print(indent(level) + "]");
-
 	}
-
-	// TODO Actually implementing these methods makes your code more general
 
 	/**
 	 * Writes the set of elements as a JSON array to the path using UTF8.
@@ -95,7 +82,10 @@ public class JSONWriter {
 	 * @throws IOException
 	 */
 	public static void asArray(TreeSet<Integer> elements, Path path) throws IOException {
-		// not used
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			int level = 1;
+			asArray(writer, elements, level);
+		}
 	}
 
 	/**
@@ -108,7 +98,33 @@ public class JSONWriter {
 	 * @throws IOException
 	 */
 	public static void asObject(TreeMap<String, Integer> elements, Path path) throws IOException {
-		// not used
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			int level = 1;
+
+			// System.out.print("{\n");
+			writer.write("{\n");
+
+			int size = elements.size();
+			int n = 1;
+
+			Set<String> keys = elements.keySet();
+			for (String key : keys) {
+				if (n == size) {
+					// System.out.print(indent(level) + quote(key) + ": " +
+					// elements.get(key) + "\n");
+					writer.write(indent(level) + quote(key) + ": " + elements.get(key) + "\n");
+				} else {
+					// System.out.print(indent(level) + quote(key) + ": " +
+					// elements.get(key) + ",\n");
+					writer.write(indent(level) + quote(key) + ": " + elements.get(key) + ",\n");
+					n++;
+				}
+			}
+
+			// System.out.print("}\n");
+			writer.write("}");
+
+		}
 	}
 
 	// TODO Try out the treemap methods here too

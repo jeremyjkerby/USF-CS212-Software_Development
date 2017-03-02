@@ -4,6 +4,8 @@
  * Imported from Lab: Word Index
  */
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -77,7 +79,7 @@ public class InvertedIndex {
 	 */
 	public void addAll(String[] words) {
 		addAll(words, 1);
-		// do not know how to use this
+
 	}
 
 	/**
@@ -90,7 +92,7 @@ public class InvertedIndex {
 	 *            starting position
 	 */
 	public void addAll(String[] words, int start) {
-		// do not know how to use this
+
 	}
 
 	/**
@@ -169,15 +171,12 @@ public class InvertedIndex {
 		return wordIndex.toString();
 	}
 
-	// TODO This breaks encapsulation, have to remove it.
-	
-	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> get() {
-		return this.wordIndex;
+	/**
+	 * Write data structure to given path
+	 * @param path
+	 * @throws IOException
+	 */
+	public void toJSON(Path path) throws IOException {
+		JSONWriter.asNestedObject(wordIndex, path);
 	}
-	
-	/* TODO 
-	public void toJSON(Path path) {
-		JSONWriter.asSomething(wordIndex, path);
-	}
-	*/ 
 }

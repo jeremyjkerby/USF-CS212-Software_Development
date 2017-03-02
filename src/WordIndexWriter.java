@@ -27,7 +27,7 @@ public class WordIndexWriter {
 			}
 		} else {
 			//System.out.println(">> writeIndex() >> My data is still " + index.toString());
-			JSONWriter.asNestedObject(index.get(), path);
+			index.toJSON(path);
 			//System.out.println(">> writeIndex() >> end");
 		}
 

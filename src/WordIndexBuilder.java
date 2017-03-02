@@ -62,13 +62,15 @@ public class WordIndexBuilder {
 			int masterIndex = 1; // the positions should start at 1
 			String masterString = "";
 			int curInt;
-			char curChar;
-
+			
+			StringBuilder sb = new StringBuilder();
+			
 			while ((curInt = reader.read()) != -1) {
-				curChar = (char) curInt;
-				masterString += curChar;
+				sb.append((char)curInt);
 			}
 
+			masterString = sb.toString();
+			
 			// System.out.println(">> buildIndex() >> data before" +
 			// masterString);
 
