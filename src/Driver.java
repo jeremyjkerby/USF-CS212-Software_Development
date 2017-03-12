@@ -1,49 +1,59 @@
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Execute this file to run the entire program
+ * 
  * @author Jeremy Kerby
  *
  */
 public class Driver {
 
 	/**
-	 * TODO
+	 * This is the main method to call functionality of application
+	 * 
 	 * @param args
-	 * @throws IOException
 	 */
 	public static void main(String[] args) {
-		// System.out.println(">> main() >> start");
-
 		ArgumentMap arguments = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex();
-		
-		/* TODO
+
+		// handle path argument
 		if (arguments.hasFlag("-path")) {
-			
-		}
-		
-		if (arguments.hasFlag(("-index")) {
-			index.toJSON(arguments.getString("-index", "index.html");
-		}
-		*/
-		
-		
-		WordIndexBuilder wib = new WordIndexBuilder();
-		WordIndexWriter wiw = new WordIndexWriter();
-		WordIndexBuilder.masterListOfFiles.clear();
-
-		// System.out.println(arguments.toString());
-		
-		try {
-			index = wib.processPathArgs(arguments); // load
-			wiw.processIndexArgs(index, arguments); // save
-		} catch (IOException e) {
-			System.out.println("File not found");
+			Path path = null;
+			if (arguments.getString("-path") != null) {
+				path = Paths.get(arguments.getString("-path"));
+				InvertedIndexBuilder.buildIndex(path, index);
+			}
 		}
 
-		// System.out.println(">> main() >> end");
+		// handle index argument
+		if (arguments.hasFlag("-index")) {
+			String indexArgPayload = arguments.getString("-index");
+			if (indexArgPayload == null) {
+				// we were given -index argument with no value
+				Path path = Paths.get("index.json");
+				try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+					index.toJSON(path);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				// we were given -index argument with value
+				Path path = Paths.get(indexArgPayload);
+				try {
+					index.toJSON(path);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 
 	}
-
 }

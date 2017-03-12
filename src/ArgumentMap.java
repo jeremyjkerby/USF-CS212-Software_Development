@@ -164,6 +164,10 @@ public class ArgumentMap {
 		}
 	}
 
+	/**
+	 * Returns string representation of arguments
+	 * @return value of string of arguments
+	 */
 	@Override
 	public String toString() {
 		return arguments.toString();

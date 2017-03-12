@@ -130,7 +130,7 @@ public class InvertedIndex {
 	 * @return true if the word is stored in the index
 	 */
 	public boolean contains(String word) {
-		return wordIndex.containsKey(word); //TODO remove ? true : false;
+		return wordIndex.containsKey(word);
 	}
 
 	/**
@@ -143,7 +143,6 @@ public class InvertedIndex {
 	 */
 	public List<String> copyWords() {
 		List<String> words = new ArrayList<String>(wordIndex.keySet());
-		words.sort(null); // TODO Remove
 		return words;
 	}
 
@@ -162,7 +161,6 @@ public class InvertedIndex {
 	public List<Integer> copyPositions(String word, String file) {
 		// TODO Careful, null pointer exception if word does not exist
 		List<Integer> words = new ArrayList<Integer>(wordIndex.get(word).get(file));
-		Collections.sort(words); // TODO Remove
 		return words;
 	}
 
