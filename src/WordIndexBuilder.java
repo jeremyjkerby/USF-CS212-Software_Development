@@ -13,10 +13,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+// TODO Actually clean up and remove commented out code and debug statements
+
 /**
  * Convenience class to build a {@link InvertedIndex} from a text file.
  */
-public class WordIndexBuilder {
+public class WordIndexBuilder { // TODO Refactor it is now an inverted index builder
 
 	/**
 	 * Creates and returns a new word index built from the file located at the
@@ -50,7 +52,7 @@ public class WordIndexBuilder {
 	 * @see Files#newBufferedReader(Path, java.nio.charset.Charset)
 	 * @see StandardCharsets#UTF_8
 	 */
-	public static void buildIndex(Path path, InvertedIndex index) throws IOException {
+	public static void buildIndex(Path path, InvertedIndex index) throws IOException { // TODO Refactor to buildFromHTML() etc. make it clear it is an html file
 		// System.out.println(">> buildIndex() >> start");
 		// System.out.println(">> buildIndex() >> Working file " +
 		// path.toString());
@@ -65,6 +67,7 @@ public class WordIndexBuilder {
 			
 			StringBuilder sb = new StringBuilder();
 			
+			// TODO Read line-by-line or read ALL characters at once
 			while ((curInt = reader.read()) != -1) {
 				sb.append((char)curInt);
 			}
@@ -83,6 +86,7 @@ public class WordIndexBuilder {
 			// split the text into individual words by spaces
 			String words[] = WordParser.parseWords(masterString);
 
+			// TODO index.addAll(words, path.toString());
 			for (int i = 0; i < words.length; i++) {
 				index.add(words[i], path.toString(), masterIndex);
 				masterIndex++;
@@ -94,6 +98,7 @@ public class WordIndexBuilder {
 		// System.out.println(">> buildIndex() >> end");
 	}
 
+	// TODO public static void buildIndex(Path path, InvertedIndex index)
 	public InvertedIndex processPathArgs(ArgumentMap arguments) throws IOException {
 		// System.out.println(">> processPathArgs() >> start");
 
@@ -109,7 +114,7 @@ public class WordIndexBuilder {
 			// -path file. Try again.");
 		} else {
 			Path path = Paths.get(pathArgPayload);
-			File file = new File(path.toString());
+			File file = new File(path.toString()); // TODO Never create a "File" object
 			if (path.toString().matches("(?i).*html") || path.toString().matches("(?i).*htm")) {
 				// System.out.println(">> processPathArgs() >> You entered valid
 				// .html or .htm file.");
@@ -147,8 +152,10 @@ public class WordIndexBuilder {
 		return index;
 	}
 
+	// TODO Nooooooo rarely appropriate to create a public static mutable member
 	public static ArrayList<File> masterListOfFiles = new ArrayList<File>();
 
+	// TODO THe one thing File is REALLY bad at is listing directories, use DirectoryStream instead
 	// recursion to find all files
 	private static void determineFiles(File d) {
 		File[] listOfFiles = d.listFiles();
@@ -165,4 +172,21 @@ public class WordIndexBuilder {
 
 	}
 
+	/* TODO
+	public static void buildIndex(Path path, InvertedIndex index) {
+		
+		if path is a directory Files.isDirectory(path)
+			open a directory stream
+				for every subpath in the directory
+					buildIndex(subpath, index)
+		else
+			if the path is an html file
+				call your file version of buildFromHTMLFile()
+		
+		
+	}
+	*/
+	
+	
+	
 }

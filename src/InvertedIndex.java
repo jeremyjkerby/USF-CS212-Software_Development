@@ -21,7 +21,7 @@ public class InvertedIndex {
 	/**
 	 * Stores a mapping of words to the positions the words were found.
 	 */
-	final private TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
+	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
 
 	/**
 	 * Initializes the index. For every key (word) of the outer HashMap the
@@ -51,6 +51,7 @@ public class InvertedIndex {
 		// inner TreeMap does not exist so create it
 		if (innerData == null) {
 			innerData = new TreeMap<String, TreeSet<Integer>>();
+			// TODO Move the puts here
 		}
 
 		// get inner most TreeSet
@@ -58,6 +59,7 @@ public class InvertedIndex {
 		// inner TreeSet does not exist so create it
 		if (positions == null) {
 			positions = new TreeSet<Integer>();
+			// TODO Move the puts here
 		}
 
 		// add current position to set
@@ -77,7 +79,7 @@ public class InvertedIndex {
 	 *
 	 * @see #addAll(String[], int)
 	 */
-	public void addAll(String[] words) {
+	public void addAll(String[] words) { // TODO Pass in a filename or location as well
 		addAll(words, 1);
 
 	}
@@ -91,8 +93,8 @@ public class InvertedIndex {
 	 * @param start
 	 *            starting position
 	 */
-	public void addAll(String[] words, int start) {
-
+	public void addAll(String[] words, int start) { // TODO Pass in a filename or location as well
+		// TODO ??????
 	}
 
 	/**
@@ -128,7 +130,7 @@ public class InvertedIndex {
 	 * @return true if the word is stored in the index
 	 */
 	public boolean contains(String word) {
-		return wordIndex.containsKey(word) ? true : false;
+		return wordIndex.containsKey(word); //TODO remove ? true : false;
 	}
 
 	/**
@@ -141,7 +143,7 @@ public class InvertedIndex {
 	 */
 	public List<String> copyWords() {
 		List<String> words = new ArrayList<String>(wordIndex.keySet());
-		words.sort(null);
+		words.sort(null); // TODO Remove
 		return words;
 	}
 
@@ -158,8 +160,9 @@ public class InvertedIndex {
 	 * @see Collections#sort(List)
 	 */
 	public List<Integer> copyPositions(String word, String file) {
+		// TODO Careful, null pointer exception if word does not exist
 		List<Integer> words = new ArrayList<Integer>(wordIndex.get(word).get(file));
-		Collections.sort(words);
+		Collections.sort(words); // TODO Remove
 		return words;
 	}
 

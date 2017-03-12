@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+// TODO Remove this class
+
 /**
  * Convenience class to write a {@link InvertedIndex} to a text file.
  */

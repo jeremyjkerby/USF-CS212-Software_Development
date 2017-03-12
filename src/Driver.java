@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Driver {
 
 	/**
-	 * 
+	 * TODO
 	 * @param args
 	 * @throws IOException
 	 */
@@ -17,6 +17,18 @@ public class Driver {
 
 		ArgumentMap arguments = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex();
+		
+		/* TODO
+		if (arguments.hasFlag("-path")) {
+			
+		}
+		
+		if (arguments.hasFlag(("-index")) {
+			index.toJSON(arguments.getString("-index", "index.html");
+		}
+		*/
+		
+		
 		WordIndexBuilder wib = new WordIndexBuilder();
 		WordIndexWriter wiw = new WordIndexWriter();
 		WordIndexBuilder.masterListOfFiles.clear();
