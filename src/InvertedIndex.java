@@ -44,14 +44,18 @@ public class InvertedIndex {
 	 */
 	public void add(String word, String file, int position) {
 		TreeMap<String, TreeSet<Integer>> innerData;
-		TreeSet<Integer> positions;
+		TreeSet<Integer> positions = null;
 
 		// get inner TreeMap for given word
 		innerData = wordIndex.get(word);
 		// inner TreeMap does not exist so create it
 		if (innerData == null) {
 			innerData = new TreeMap<String, TreeSet<Integer>>();
-			// TODO Move the puts here
+			
+			// add updated list into innerData
+			innerData.put(file, positions);
+			// add updated innerData into index
+			wordIndex.put(word, innerData);
 		}
 
 		// get inner most TreeSet
@@ -59,15 +63,15 @@ public class InvertedIndex {
 		// inner TreeSet does not exist so create it
 		if (positions == null) {
 			positions = new TreeSet<Integer>();
-			// TODO Move the puts here
+			
+			// add updated list into innerData
+			innerData.put(file, positions);
+			// add updated innerData into index
+			wordIndex.put(word, innerData);
 		}
 
 		// add current position to set
 		positions.add(position);
-		// add updated list into innerData
-		innerData.put(file, positions);
-		// add updated innerData into index
-		wordIndex.put(word, innerData);
 	}
 
 	/**
@@ -79,9 +83,8 @@ public class InvertedIndex {
 	 *
 	 * @see #addAll(String[], int)
 	 */
-	public void addAll(String[] words) { // TODO Pass in a filename or location as well
-		addAll(words, 1);
-
+	public void addAll(String[] words, String filename) {
+		addAll(words, 1, filename);
 	}
 
 	/**
@@ -93,8 +96,11 @@ public class InvertedIndex {
 	 * @param start
 	 *            starting position
 	 */
-	public void addAll(String[] words, int start) { // TODO Pass in a filename or location as well
-		// TODO ??????
+	public void addAll(String[] words, int start, String filename) {
+		for (int i = 0; i < words.length; i++) {
+			add(words[i], filename, start);
+			start++;
+		}
 	}
 
 	/**
@@ -159,8 +165,9 @@ public class InvertedIndex {
 	 * @see Collections#sort(List)
 	 */
 	public List<Integer> copyPositions(String word, String file) {
-		// TODO Careful, null pointer exception if word does not exist
-		List<Integer> words = new ArrayList<Integer>(wordIndex.get(word).get(file));
+		List<Integer> words = null;
+		if (wordIndex.get(word) != null)
+			words = new ArrayList<Integer>(wordIndex.get(word).get(file));
 		return words;
 	}
 
@@ -174,6 +181,7 @@ public class InvertedIndex {
 
 	/**
 	 * Write data structure to given path
+	 * 
 	 * @param path
 	 * @throws IOException
 	 */

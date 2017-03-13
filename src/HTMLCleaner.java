@@ -27,7 +27,7 @@ public class HTMLCleaner {
 	 */
 	public static String stripEntities(String html) {
 		// if & is followed by some non-white space then replace
-		return html.replaceAll("&\\S.*?;", " ");
+		return html.replaceAll("(?s)&\\S.*?;", " ");
 	}
 
 	/**

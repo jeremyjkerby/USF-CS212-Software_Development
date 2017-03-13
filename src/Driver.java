@@ -22,6 +22,9 @@ public class Driver {
 		ArgumentMap arguments = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex();
 
+		String file = "apple.html";
+		index.copyPositions("test", file);
+
 		// handle path argument
 		if (arguments.hasFlag("-path")) {
 			Path path = null;
@@ -40,8 +43,7 @@ public class Driver {
 				try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 					index.toJSON(path);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("Unable to write JSON to file");
 				}
 			} else {
 				// we were given -index argument with value
@@ -49,8 +51,7 @@ public class Driver {
 				try {
 					index.toJSON(path);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("Unable to write JSON to file");
 				}
 			}
 		}

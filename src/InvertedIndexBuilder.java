@@ -34,7 +34,8 @@ public class InvertedIndexBuilder {
 	}
 
 	/**
-	 * TODO
+	 * Determines if path is directory or file. If it is a file sends of to be
+	 * processed
 	 * 
 	 * @param path
 	 * @param index
@@ -46,16 +47,14 @@ public class InvertedIndexBuilder {
 					buildIndex(p, index); // recursive call
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Unable to read valid directory.");
 			}
 		} else { // is file
 			if (path.toString().matches("(?i).*html") || path.toString().matches("(?i).*htm")) {
 				try {
 					buildFromHTML(path, index);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("Unable to read valid html or htm file.");
 				}
 			}
 		}
@@ -79,8 +78,7 @@ public class InvertedIndexBuilder {
 	public static void buildFromHTML(Path path, InvertedIndex index) throws IOException {
 		// using the UTF-8 character encoding for all file processing
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-			int masterIndex = 1; // the positions should start at 1
-			String masterString = "";
+			String masterString = null;
 			int curInt;
 
 			StringBuilder sb = new StringBuilder();
@@ -91,18 +89,16 @@ public class InvertedIndexBuilder {
 			}
 
 			masterString = sb.toString();
+			// System.out.println(masterString);
 
 			// process masterString for entry
 			masterString = HTMLCleaner.stripHTML(masterString);
+			//System.out.println(masterString);
 
 			// split the text into individual words by spaces
 			String words[] = WordParser.parseWords(masterString);
 
-			// TODO index.addAll(words, path.toString());
-			for (int i = 0; i < words.length; i++) {
-				index.add(words[i], path.toString(), masterIndex);
-				masterIndex++;
-			}
+			index.addAll(words, path.toString());
 		}
 	}
 
