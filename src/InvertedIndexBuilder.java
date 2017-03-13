@@ -79,21 +79,18 @@ public class InvertedIndexBuilder {
 		// using the UTF-8 character encoding for all file processing
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			String masterString = null;
-			int curInt;
+			String line;
 
 			StringBuilder sb = new StringBuilder();
 
-			// TODO Read line-by-line or read ALL characters at once
-			while ((curInt = reader.read()) != -1) {
-				sb.append((char) curInt);
+			while ((line = reader.readLine()) != null) {
+				sb.append(line + " ");
 			}
 
 			masterString = sb.toString();
-			// System.out.println(masterString);
 
 			// process masterString for entry
 			masterString = HTMLCleaner.stripHTML(masterString);
-			//System.out.println(masterString);
 
 			// split the text into individual words by spaces
 			String words[] = WordParser.parseWords(masterString);
