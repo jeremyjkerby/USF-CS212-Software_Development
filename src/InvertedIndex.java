@@ -185,7 +185,11 @@ public class InvertedIndex {
 	 * @param path
 	 * @throws IOException
 	 */
-	public void toJSON(Path path) throws IOException {
-		JSONWriter.asNestedObject(wordIndex, path);
+	public void toJSON(Path path) {
+		try {
+			JSONWriter.asNestedObject(wordIndex, path);
+		} catch (IOException e) {
+			System.out.println("Unable to write JSON to file");
+		}
 	}
 }

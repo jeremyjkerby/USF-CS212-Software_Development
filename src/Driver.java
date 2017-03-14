@@ -1,7 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -40,19 +36,11 @@ public class Driver {
 			if (indexArgPayload == null) {
 				// we were given -index argument with no value
 				Path path = Paths.get("index.json");
-				try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-					index.toJSON(path);
-				} catch (IOException e) {
-					System.out.println("Unable to write JSON to file");
-				}
+				index.toJSON(path);
 			} else {
 				// we were given -index argument with value
 				Path path = Paths.get(indexArgPayload);
-				try {
-					index.toJSON(path);
-				} catch (IOException e) {
-					System.out.println("Unable to write JSON to file");
-				}
+				index.toJSON(path);
 			}
 		}
 
