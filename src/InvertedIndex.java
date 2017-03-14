@@ -51,7 +51,7 @@ public class InvertedIndex {
 		// inner TreeMap does not exist so create it
 		if (innerData == null) {
 			innerData = new TreeMap<String, TreeSet<Integer>>();
-			
+
 			// add updated list into innerData
 			innerData.put(file, positions);
 			// add updated innerData into index
@@ -63,7 +63,7 @@ public class InvertedIndex {
 		// inner TreeSet does not exist so create it
 		if (positions == null) {
 			positions = new TreeSet<Integer>();
-			
+
 			// add updated list into innerData
 			innerData.put(file, positions);
 			// add updated innerData into index
@@ -183,7 +183,6 @@ public class InvertedIndex {
 	 * Write data structure to given path
 	 * 
 	 * @param path
-	 * @throws IOException
 	 */
 	public void toJSON(Path path) {
 		try {
