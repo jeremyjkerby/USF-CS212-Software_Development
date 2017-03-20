@@ -18,9 +18,6 @@ public class Driver {
 		ArgumentMap arguments = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex();
 
-		String file = "apple.html";
-		index.copyPositions("test", file);
-
 		// handle path argument
 		if (arguments.hasFlag("-path")) {
 			Path path = null;

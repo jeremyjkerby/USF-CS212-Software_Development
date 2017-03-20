@@ -63,8 +63,8 @@ public class ArgumentMap {
 	/**
 	 * Verify given string is valid flag.
 	 *
-	 * @param arg
-	 * @return
+	 * @param arg verify given is valid flag
+	 * @return true if valid flag
 	 */
 	public static boolean isFlag(String arg) {
 		return ((arg != null) && (arg.matches("-\\w+")) ? true : false);
@@ -73,8 +73,8 @@ public class ArgumentMap {
 	/**
 	 * Verify given string is valid value.
 	 *
-	 * @param arg
-	 * @return
+	 * @param arg verify given is valid value
+	 * @return true is valid value
 	 */
 	public static boolean isValue(String arg) {
 		return ((arg != null) && (arg.matches("[^-\\s].*"))) ? true : false;

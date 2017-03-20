@@ -77,11 +77,11 @@ public class InvertedIndex {
 	/**
 	 * Adds the array of words at once, assuming the first word in the array is
 	 * at position 1.
-	 *
+	 * 
 	 * @param words
-	 *            array of words to add
-	 *
-	 * @see #addAll(String[], int)
+	 *            words to add
+	 * @param filename
+	 *            origin of words
 	 */
 	public void addAll(String[] words, String filename) {
 		addAll(words, 1, filename);
@@ -89,12 +89,14 @@ public class InvertedIndex {
 
 	/**
 	 * Adds the array of words at once, assuming the first word in the array is
-	 * at the provided starting position
-	 *
+	 * at the provided starting position.
+	 * 
 	 * @param words
-	 *            array of words to add
+	 *            words words to add
 	 * @param start
-	 *            starting position
+	 *            where to start
+	 * @param filename
+	 *            filename origin of words
 	 */
 	public void addAll(String[] words, int start, String filename) {
 		for (int i = 0; i < words.length; i++) {
@@ -173,6 +175,8 @@ public class InvertedIndex {
 
 	/**
 	 * Returns a string representation of this index.
+	 * 
+	 * @return string representation
 	 */
 	@Override
 	public String toString() {
@@ -180,9 +184,10 @@ public class InvertedIndex {
 	}
 
 	/**
-	 * Write data structure to given path
+	 * Write data structure to given path.
 	 * 
 	 * @param path
+	 *            where to save
 	 */
 	public void toJSON(Path path) {
 		try {
