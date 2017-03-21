@@ -72,6 +72,18 @@ public class InvertedIndex {
 
 		// add current position to set
 		positions.add(position);
+		
+		/* TODO 
+		if (wordIndex.get(word) == null) {
+			wordIndex.put(word, new TreeMap<String, TreeSet<Integer>>());
+		}
+		
+		if (wordIndex.get(word).get(file) == null) {
+			wordIndex.get(word).put(word,  new TreeSet<Integer>());
+		}
+		
+		wordIndex.get(word).get(file).add(position);
+		*/
 	}
 
 	/**
@@ -168,6 +180,8 @@ public class InvertedIndex {
 	 */
 	public List<Integer> copyPositions(String word, String file) {
 		List<Integer> words = null;
+		
+		// TODO Poor code style, always use braces (Google the goto fail; Apple bug)
 		if (wordIndex.get(word) != null)
 			words = new ArrayList<Integer>(wordIndex.get(word).get(file));
 		return words;
