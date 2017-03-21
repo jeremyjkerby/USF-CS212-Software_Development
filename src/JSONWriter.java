@@ -64,6 +64,9 @@ public class JSONWriter {
 		while (it.hasNext()) {
 			Integer data = it.next();
 			writer.append(indent(level + 1) + data);
+			
+			// TODO Calling if a lot of times for something that happens once
+			// TODO Switch to an approach that doesn't need an if inside the while
 			if (it.hasNext()) {
 				writer.append(",");
 			}
