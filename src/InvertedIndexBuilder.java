@@ -52,8 +52,7 @@ public class InvertedIndexBuilder {
 				System.out.println("Unable to read valid directory.");
 			}
 		} else { // is file
-			// TODO "(?i).*html?"
-			if (path.toString().matches("(?i).*html") || path.toString().matches("(?i).*htm")) {
+			if (path.toString().matches("(?i).*html?")) {
 				try {
 					buildFromHTML(path, index);
 				} catch (IOException e) {
