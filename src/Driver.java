@@ -46,58 +46,49 @@ public class Driver {
 			}
 		}
 
-		// handle query argument
+		
+
+		// this needs to be global used in queries search and write
 		ArrayList<SearchResult> output = new ArrayList<SearchResult>();
+
+		// handle query argument
 		if (arguments.hasFlag("-query")) {
 			String queryArgPayload = arguments.getString("-query");
 			if (queryArgPayload != null) {
 				// we were given -query argument with value
 				Path path = Paths.get(queryArgPayload);
 
+				// TODO
 				ArrayList<String> queryWords = new ArrayList<String>();
 				// for each line you read clean up and prep words
-				Query query = new Query();
-				try {
-					queryWords = query.buildFromFile(path);
-				} catch (IOException e) {
-					System.out.println("Unable to read query file");
-				}
-
+				Query query = new Query(); // re think this
+				queryWords = query.buildFromFile(path);
+				
 				String[] batchQuery;
-
-				// determine search, only use if query enabled
+				// determine search type exact/partial
 				if (arguments.hasFlag("-exact")) { // perform exact search
-					// batchQuery holds subset search (words per line to search)
 					for (int i = 0; i < queryWords.size(); i++) {
 						batchQuery = queryWords.get(i).split(" ");
 						output.add(index.exactSearch(batchQuery));
 					}
 				} else { // perform partial search
-					// batchQuery holds subset search (words per line to search)
 					for (int i = 0; i < queryWords.size(); i++) {
 						batchQuery = queryWords.get(i).split(" ");
 						output.add(index.partialSearch(batchQuery));
 					}
-
 				}
-			} else {
-				// we were given -query argument with no value
-				System.out.println("You gave us an empty query");
 			}
-		} else {
-			// we were not given -query argument with value
-			System.out.println("No search being performed");
 		}
 
 		// handle results argument
 		if (arguments.hasFlag("-results")) {
 			String resultArgPayload = arguments.getString("-results");
 			if (resultArgPayload != null) {
-				// we were given -index argument with value
+				// we were given -results argument with value
 				Path path = Paths.get(resultArgPayload);
 				index.saveResults(output, path);
 			} else {
-				// we were given -index argument with no value
+				// we were given -results argument with no value
 				Path path = Paths.get("results.json");
 				index.saveResults(output, path);
 			}

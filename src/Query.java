@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class Query {
 
-	public ArrayList<String> buildFromFile(Path path) throws IOException {
+	public ArrayList<String> buildFromFile(Path path) {
 
 		ArrayList<String> queryStrings = new ArrayList<String>();
 
@@ -16,33 +16,34 @@ public class Query {
 
 			String line;
 			while ((line = reader.readLine()) != null) {
-				// for each line
-
-				// clean and separate into words
+				// for each line in file clean and separate into words
 				String temp = HTMLCleaner.stripHTML(line);
 				String cleanedTemp[] = WordParser.parseWords(temp);
 				ArrayList<String> tempQueryWords = new ArrayList<String>();
 				for (int i = 0; i < cleanedTemp.length; i++) {
 					tempQueryWords.add(cleanedTemp[i]);
 				}
-				Collections.sort(tempQueryWords);
+				Collections.sort(tempQueryWords); // sort words per line
 				String queryString = "";
+				
+				// build cleaned sorted line of query words
 				for (int i = 0; i < tempQueryWords.size(); i++) {
-					// queryWords.add(tempQueryWords.get(i));
 					if (i != tempQueryWords.size() - 1) {
 						queryString += tempQueryWords.get(i) + " ";
 					} else {
 						queryString += tempQueryWords.get(i);
 					}
 				}
-				
+				// if the line is not already in list or empty then save it
 				if (!queryStrings.contains(queryString) && (queryString.isEmpty() == false)) {
 					queryStrings.add(queryString);
 				}
 			}
-
+		} catch (IOException e) {
+			System.out.println("Unable to read query file");
 		}
-		// pass those clean words to index
+		
+		// sort clean lines
 		Collections.sort(queryStrings);
 		return queryStrings;
 	}

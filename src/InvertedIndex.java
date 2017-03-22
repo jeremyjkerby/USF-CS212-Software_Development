@@ -201,14 +201,13 @@ public class InvertedIndex {
 	 * @return sorted list search result
 	 */
 	public SearchResult exactSearch(String[] words) {
-		String queries = "";
-
-		SearchResult sr = new SearchResult();
+		SearchResult sr = new SearchResult(); // TODO revamp this
 		int count = 0;
 
 		TreeMap<String, TreeSet<Integer>> curResult = new TreeMap<String, TreeSet<Integer>>();
 
 		// for each cleaned word build queries string
+		String queries = "";
 		for (int i = 0; i < words.length; i++) {
 			if (i != words.length - 1) {
 				queries += words[i] + " ";
@@ -216,9 +215,13 @@ public class InvertedIndex {
 				queries += words[i];
 			}
 		}
-		sr.setQueries(queries); // this should be ok
+		sr.setQueries(queries);
 
 		ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
+		
+		//ArrayList<HashMap<String, SearchResult>> testing = new ArrayList<HashMap<String, SearchResult>>();
+		//ArrayList<SearchResult> testing = new  ArrayList<SearchResult>();
+		
 		// for each cleaned word
 		for (int i = 0; i < words.length; i++) {
 			// verify it is in inverted index
@@ -227,8 +230,6 @@ public class InvertedIndex {
 				curResult = wordIndex.get(words[i]);
 				// files found in
 				Set<String> curResultKeys = curResult.keySet();
-				
-				int c = 0;
 				// for each file of word
 				for (String key : curResultKeys) {
 					HashMap<String, Object> inner = new HashMap<String, Object>();
@@ -236,7 +237,7 @@ public class InvertedIndex {
 					count = curResult.get(key).size();
 					inner.put("count", count);
 					inner.put("index", curResult.get(key).first());
-					
+
 					int modify = 0;
 					if (results.isEmpty()) {
 						results.add(inner);
@@ -247,19 +248,19 @@ public class InvertedIndex {
 							if (key.compareTo(results.get(r).get("where").toString()) == 0) {
 								flag = true;
 								modify = r;
-							} 
+							}
 						}
 						if (flag == false) {
+							// record does not exists so add it
 							results.add(inner);
 						} else {
-							// update count
+							// record already exists so update it
 							int tempcount = (int) results.get(modify).get("count");
 							tempcount += count;
 							// update index
 							int tempindex = (int) results.get(modify).get("index");
 							if (curResult.get(key).first() < tempindex)
 								tempindex = curResult.get(key).first();
-							// results.remove(modify);
 							HashMap<String, Object> inner2 = new HashMap<String, Object>();
 							inner2.put("where", key);
 							inner2.put("count", tempcount);
@@ -268,10 +269,7 @@ public class InvertedIndex {
 						}
 						flag = false;
 					}
-
-					c++;
 				}
-
 			}
 		}
 		sr.setResults(results);
@@ -285,14 +283,13 @@ public class InvertedIndex {
 	 * @return sorted list search result
 	 */
 	public SearchResult partialSearch(String[] words) {
-		String queries = "";
-
 		SearchResult sr = new SearchResult();
 		int count = 0;
 
 		TreeMap<String, TreeSet<Integer>> curResult = new TreeMap<String, TreeSet<Integer>>();
 
 		// for each cleaned word build queries string
+		String queries = "";
 		for (int i = 0; i < words.length; i++) {
 			if (i != words.length - 1) {
 				queries += words[i] + " ";
@@ -300,19 +297,18 @@ public class InvertedIndex {
 				queries += words[i];
 			}
 		}
-		sr.setQueries(queries); // this should be ok
+		sr.setQueries(queries);
 
 		// get all the keys/words we have
 		Set<String> keys = wordIndex.keySet();
-		
+
 		ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
 		// for each cleaned word build queries string
 		for (int i = 0; i < words.length; i++) {
 			// for each key check if it starts with word
 			for (String key : keys) {
 				if (key.startsWith(words[i])) {
-					// we have a match
-					// so get me entire object
+					// it is so get me entire object
 					curResult = wordIndex.get(key);
 
 					// files found in
@@ -333,14 +329,11 @@ public class InvertedIndex {
 							int size = results.size();
 							boolean flag = false;
 							for (int r = 0; r < size; r++) {
-
 								if (cur.compareTo(results.get(r).get("where").toString()) == 0) {
 									flag = true;
 									modify = r;
-								} 
-
+								}
 							}
-
 							if (flag == false) {
 								results.add(inner);
 							} else {
@@ -356,12 +349,11 @@ public class InvertedIndex {
 								inner2.put("count", tempcount);
 								inner2.put("index", tempindex);
 								results.set(modify, inner2);
-								
 							}
 							flag = false;
 						}
 					}
-				} 
+				}
 			}
 		}
 		sr.setResults(results);

@@ -4,11 +4,102 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class SearchResult {
+/**
+ * 
+ * @author Jeremy Kerby
+ *
+ */
+public class SearchResult implements Comparable<SearchResult> {
+
+	// data members that I am currently not using
+	private String where;
+	private int count;
+	private int index;
 
 	/**
-	 * Stores a mapping of results with some other information found.
+	 * 
+	 * @param where
+	 * @param count
+	 * @param index
 	 */
+	public SearchResult(String where, int count, int index) {
+		this.where = where;
+		this.count = count;
+		this.index = index;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getWhere() {
+		return this.where;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int getCount() {
+		return this.count;
+	}
+
+	/**
+	 * 
+	 * @param count
+	 */
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int getIndex() {
+		return this.index;
+	}
+
+	/**
+	 * 
+	 * @param index
+	 */
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	/**
+	 * 
+	 * @param sr
+	 */
+	@Override
+	public int compareTo(SearchResult sr) {
+		if (this.count == sr.count) {
+			if (this.index == sr.index) {
+				if (this.where.compareTo(sr.where) < 0) {
+					return -1;
+				} else {
+					return 1;
+				}
+			} else {
+				if (this.index < sr.index) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		} else {
+			if (this.count > sr.count) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
+	}
+
+	//
+	// below is what is currently being used
+	//
 	HashMap<String, Object> output;
 
 	public SearchResult() {
@@ -66,4 +157,5 @@ public class SearchResult {
 		});
 		return list;
 	}
+
 }
