@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+// TODO Fill in your Javadoc
+
 /**
  * 
  * @author Jeremy Kerby
@@ -12,7 +14,7 @@ import java.util.HashMap;
 public class SearchResult implements Comparable<SearchResult> {
 
 	// data members that I am currently not using
-	private String where;
+	private String where; // TODO final
 	private int count;
 	private int index;
 
@@ -43,6 +45,14 @@ public class SearchResult implements Comparable<SearchResult> {
 	public int getCount() {
 		return this.count;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getIndex() {
+		return this.index;
+	}	
 
 	/**
 	 * 
@@ -52,13 +62,14 @@ public class SearchResult implements Comparable<SearchResult> {
 		this.count = count;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public int getIndex() {
-		return this.index;
-	}
+	// TODO 
+//	public void addCount(int count) {
+//		this.count += count;
+//	}
+//	
+//	public void updateIndex(int index) {
+//		only update if less than
+//	}
 
 	/**
 	 * 
@@ -74,6 +85,12 @@ public class SearchResult implements Comparable<SearchResult> {
 	 */
 	@Override
 	public int compareTo(SearchResult sr) {
+		// TODO 
+//		if (this.count != sr.count) {
+//			return Integer.compare(this.count, sr.count);
+//		} else if (...) else...
+		
+		
 		if (this.count == sr.count) {
 			if (this.index == sr.index) {
 				if (this.where.compareTo(sr.where) < 0) {

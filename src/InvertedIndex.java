@@ -223,13 +223,13 @@ public class InvertedIndex {
 		//ArrayList<SearchResult> testing = new  ArrayList<SearchResult>();
 		
 		// for each cleaned word
-		for (int i = 0; i < words.length; i++) {
+		for (int i = 0; i < words.length; i++) { // TODO enhanced for loop
 			// verify it is in inverted index
 			if (wordIndex.containsKey(words[i]) == true) {
 				// it is so get me entire object
-				curResult = wordIndex.get(words[i]);
+				curResult = wordIndex.get(words[i]); // TODO locationMap
 				// files found in
-				Set<String> curResultKeys = curResult.keySet();
+				Set<String> curResultKeys = curResult.keySet(); // TODO paths
 				// for each file of word
 				for (String key : curResultKeys) {
 					HashMap<String, Object> inner = new HashMap<String, Object>();
@@ -244,6 +244,8 @@ public class InvertedIndex {
 					} else {
 						int size = results.size();
 						boolean flag = false;
+						
+						// TODO Can avoid needing a linear search
 						for (int r = 0; r < size; r++) {
 							if (key.compareTo(results.get(r).get("where").toString()) == 0) {
 								flag = true;
@@ -274,6 +276,22 @@ public class InvertedIndex {
 		}
 		sr.setResults(results);
 		return sr;
+		
+		/*
+		List<SearchResult> resultList = new ArrayList<>();
+		Map<String, SearchResult> resultMap = new Map<>();
+		
+		for every query
+			if exists in map
+				if this location is in our resultMap...
+					update an existing search result
+				else
+					add a new search result to our map
+		
+		
+		Collection.sort(resultList);
+		return resultList;
+		*/
 	}
 
 	/**

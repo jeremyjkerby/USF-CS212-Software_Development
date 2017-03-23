@@ -3,6 +3,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+// TODO Warnings
+
 /**
  * Execute this file to run the entire program
  * 
@@ -20,11 +22,12 @@ public class Driver {
 		ArgumentMap arguments = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex();
 
+		// TODO Delete
 		String file = "apple.html";
 		index.copyPositions("test", file);
 
 		// handle path argument
-		if (arguments.hasFlag("-path")) {
+		if (arguments.hasFlag("-path")) { // TODO Remove this outer if
 			Path path = null;
 			if (arguments.getString("-path") != null) {
 				path = Paths.get(arguments.getString("-path"));
@@ -34,6 +37,7 @@ public class Driver {
 
 		// handle index argument
 		if (arguments.hasFlag("-index")) {
+			// TODO String path = arguments.getString("-index", "index.json");
 			String indexArgPayload = arguments.getString("-index");
 			if (indexArgPayload == null) {
 				// we were given -index argument with no value
