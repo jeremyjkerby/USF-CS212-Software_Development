@@ -10,7 +10,9 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
@@ -169,5 +171,43 @@ public class JSONWriter {
 			}
 			writer.append("}");
 		}
+	}
+
+	public static void searchResults(ArrayList<SearchResult> elements, Path path) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			writer.append("[\n");
+
+			for (int i = 0; i < elements.size(); i++) {
+				writer.append(indent(1) + "{\n");
+				SearchResult sr = elements.get(i);
+				writer.append(indent(2) + "\"queries\": " + quote(sr.output.get("queries").toString()) + ",\n");
+				writer.append(indent(2) + "\"results\": ");
+				asArray(writer, sr.output.get("results"));
+				if (i != elements.size() - 1) {
+					writer.append(indent(1) + "},\n");
+				} else {
+					writer.append(indent(1) + "}\n");
+				}
+			}
+			writer.append("]");
+		}
+	}
+
+	private static void asArray(Writer writer, Object object) throws IOException {
+		ArrayList<HashMap<String, Object>> data = (ArrayList<HashMap<String, Object>>) object;
+		writer.append("[\n");
+
+		for (int i = 0; i < data.size(); i++) {
+			writer.append(indent(3) + "{\n");
+			writer.append(indent(4) + "\"where\": " + quote(data.get(i).get("where").toString()) + ",\n");
+			writer.append(indent(4) + "\"count\": " + data.get(i).get("count") + ",\n");
+			writer.append(indent(4) + "\"index\": " + data.get(i).get("index") + "\n");
+			if (i != data.size() - 1) {
+				writer.append(indent(3) + "},\n");
+			} else {
+				writer.append(indent(3) + "}\n");
+			}
+		}
+		writer.append(indent(2) + "]\n");
 	}
 }

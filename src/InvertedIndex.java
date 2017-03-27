@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -203,6 +205,198 @@ public class InvertedIndex {
 	public void toJSON(Path path) {
 		try {
 			JSONWriter.asNestedObject(wordIndex, path);
+		} catch (IOException e) {
+			System.out.println("Unable to write JSON to file");
+		}
+	}
+
+	/**
+	 * Perform exact search on InvertedIndex with given words
+	 * 
+	 * @param words
+	 * @return sorted list search result
+	 */
+	public SearchResult exactSearch(String[] words) {
+		SearchResult sr = new SearchResult(); // TODO revamp this
+		int count = 0;
+
+		TreeMap<String, TreeSet<Integer>> curResult = new TreeMap<String, TreeSet<Integer>>();
+
+		// for each cleaned word build queries string
+		String queries = "";
+		for (int i = 0; i < words.length; i++) {
+			if (i != words.length - 1) {
+				queries += words[i] + " ";
+			} else {
+				queries += words[i];
+			}
+		}
+		sr.setQueries(queries);
+
+		ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
+		
+		//ArrayList<HashMap<String, SearchResult>> testing = new ArrayList<HashMap<String, SearchResult>>();
+		//ArrayList<SearchResult> testing = new  ArrayList<SearchResult>();
+		
+		// for each cleaned word
+		for (int i = 0; i < words.length; i++) { // TODO enhanced for loop
+			// verify it is in inverted index
+			if (wordIndex.containsKey(words[i]) == true) {
+				// it is so get me entire object
+				curResult = wordIndex.get(words[i]); // TODO locationMap
+				// files found in
+				Set<String> curResultKeys = curResult.keySet(); // TODO paths
+				// for each file of word
+				for (String key : curResultKeys) {
+					HashMap<String, Object> inner = new HashMap<String, Object>();
+					inner.put("where", key);
+					count = curResult.get(key).size();
+					inner.put("count", count);
+					inner.put("index", curResult.get(key).first());
+
+					int modify = 0;
+					if (results.isEmpty()) {
+						results.add(inner);
+					} else {
+						int size = results.size();
+						boolean flag = false;
+						
+						// TODO Can avoid needing a linear search
+						for (int r = 0; r < size; r++) {
+							if (key.compareTo(results.get(r).get("where").toString()) == 0) {
+								flag = true;
+								modify = r;
+							}
+						}
+						if (flag == false) {
+							// record does not exists so add it
+							results.add(inner);
+						} else {
+							// record already exists so update it
+							int tempcount = (int) results.get(modify).get("count");
+							tempcount += count;
+							// update index
+							int tempindex = (int) results.get(modify).get("index");
+							if (curResult.get(key).first() < tempindex)
+								tempindex = curResult.get(key).first();
+							HashMap<String, Object> inner2 = new HashMap<String, Object>();
+							inner2.put("where", key);
+							inner2.put("count", tempcount);
+							inner2.put("index", tempindex);
+							results.set(modify, inner2);
+						}
+						flag = false;
+					}
+				}
+			}
+		}
+		sr.setResults(results);
+		return sr;
+		
+		/*
+		List<SearchResult> resultList = new ArrayList<>();
+		Map<String, SearchResult> resultMap = new Map<>();
+		
+		for every query
+			if exists in map
+				if this location is in our resultMap...
+					update an existing search result
+				else
+					add a new search result to our map
+		
+		
+		Collection.sort(resultList);
+		return resultList;
+		*/
+	}
+
+	/**
+	 * Perform partial search on InvertedIndex with given words
+	 * 
+	 * @param words
+	 * @return sorted list search result
+	 */
+	public SearchResult partialSearch(String[] words) {
+		SearchResult sr = new SearchResult();
+		int count = 0;
+
+		TreeMap<String, TreeSet<Integer>> curResult = new TreeMap<String, TreeSet<Integer>>();
+
+		// for each cleaned word build queries string
+		String queries = "";
+		for (int i = 0; i < words.length; i++) {
+			if (i != words.length - 1) {
+				queries += words[i] + " ";
+			} else {
+				queries += words[i];
+			}
+		}
+		sr.setQueries(queries);
+
+		// get all the keys/words we have
+		Set<String> keys = wordIndex.keySet();
+
+		ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
+		// for each cleaned word build queries string
+		for (int i = 0; i < words.length; i++) {
+			// for each key check if it starts with word
+			for (String key : keys) {
+				if (key.startsWith(words[i])) {
+					// it is so get me entire object
+					curResult = wordIndex.get(key);
+
+					// files found in
+					Set<String> curResultKeys = curResult.keySet();
+
+					for (String cur : curResultKeys) {
+						HashMap<String, Object> inner = new HashMap<String, Object>();
+
+						inner.put("where", cur);
+						count = curResult.get(cur).size();
+						inner.put("count", count);
+						inner.put("index", curResult.get(cur).first());
+
+						int modify = 0; // holds who to modify
+						if (results.isEmpty()) {
+							results.add(inner);
+						} else {
+							int size = results.size();
+							boolean flag = false;
+							for (int r = 0; r < size; r++) {
+								if (cur.compareTo(results.get(r).get("where").toString()) == 0) {
+									flag = true;
+									modify = r;
+								}
+							}
+							if (flag == false) {
+								results.add(inner);
+							} else {
+								// update count
+								int tempcount = (int) results.get(modify).get("count");
+								tempcount += count;
+								// update index
+								int tempindex = (int) results.get(modify).get("index");
+								if (curResult.get(cur).first() < tempindex)
+									tempindex = curResult.get(cur).first();
+								HashMap<String, Object> inner2 = new HashMap<String, Object>();
+								inner2.put("where", cur);
+								inner2.put("count", tempcount);
+								inner2.put("index", tempindex);
+								results.set(modify, inner2);
+							}
+							flag = false;
+						}
+					}
+				}
+			}
+		}
+		sr.setResults(results);
+		return sr;
+	}
+
+	public void saveResults(ArrayList<SearchResult> output, Path path) {
+		try {
+			JSONWriter.searchResults(output, path);
 		} catch (IOException e) {
 			System.out.println("Unable to write JSON to file");
 		}
