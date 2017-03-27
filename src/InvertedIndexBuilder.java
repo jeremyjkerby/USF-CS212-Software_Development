@@ -35,10 +35,12 @@ public class InvertedIndexBuilder {
 
 	/**
 	 * Determines if path is directory or file. If it is a file sends of to be
-	 * processed
+	 * processed.
 	 * 
 	 * @param path
+	 *            path to file to parse
 	 * @param index
+	 *            inverted index to add words
 	 */
 	public static void buildIndex(Path path, InvertedIndex index) {
 		if (Files.isDirectory(path)) { // is directory
@@ -50,7 +52,7 @@ public class InvertedIndexBuilder {
 				System.out.println("Unable to read valid directory.");
 			}
 		} else { // is file
-			if (path.toString().matches("(?i).*html") || path.toString().matches("(?i).*htm")) {
+			if (path.toString().matches("(?i).*html?")) {
 				try {
 					buildFromHTML(path, index);
 				} catch (IOException e) {
@@ -67,7 +69,7 @@ public class InvertedIndexBuilder {
 	 * @param path
 	 *            path to file to parse
 	 * @param index
-	 *            word index to add words
+	 *            inverted word index to add words
 	 * @throws IOException
 	 *
 	 * @see WordParser#parseWords(String, int)

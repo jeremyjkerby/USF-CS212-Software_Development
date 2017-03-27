@@ -74,16 +74,26 @@ public class InvertedIndex {
 
 		// add current position to set
 		positions.add(position);
+
+		/*
+		 * if (wordIndex.get(word) == null) { wordIndex.put(word, new
+		 * TreeMap<String, TreeSet<Integer>>()); }
+		 * 
+		 * if (wordIndex.get(word).get(file) == null) {
+		 * wordIndex.get(word).put(word, new TreeSet<Integer>()); }
+		 * 
+		 * wordIndex.get(word).get(file).add(position);
+		 */
 	}
 
 	/**
 	 * Adds the array of words at once, assuming the first word in the array is
 	 * at position 1.
-	 *
+	 * 
 	 * @param words
-	 *            array of words to add
-	 *
-	 * @see #addAll(String[], int)
+	 *            words to add
+	 * @param filename
+	 *            origin of words
 	 */
 	public void addAll(String[] words, String filename) {
 		addAll(words, 1, filename);
@@ -91,12 +101,14 @@ public class InvertedIndex {
 
 	/**
 	 * Adds the array of words at once, assuming the first word in the array is
-	 * at the provided starting position
-	 *
+	 * at the provided starting position.
+	 * 
 	 * @param words
-	 *            array of words to add
+	 *            words words to add
 	 * @param start
-	 *            starting position
+	 *            where to start
+	 * @param filename
+	 *            filename origin of words
 	 */
 	public void addAll(String[] words, int start, String filename) {
 		for (int i = 0; i < words.length; i++) {
@@ -168,13 +180,16 @@ public class InvertedIndex {
 	 */
 	public List<Integer> copyPositions(String word, String file) {
 		List<Integer> words = null;
-		if (wordIndex.get(word) != null)
+		if (wordIndex.get(word) != null) {
 			words = new ArrayList<Integer>(wordIndex.get(word).get(file));
+		}
 		return words;
 	}
 
 	/**
 	 * Returns a string representation of this index.
+	 * 
+	 * @return string representation
 	 */
 	@Override
 	public String toString() {
@@ -182,9 +197,10 @@ public class InvertedIndex {
 	}
 
 	/**
-	 * Write data structure to given path
+	 * Write data structure to given path.
 	 * 
 	 * @param path
+	 *            where to save
 	 */
 	public void toJSON(Path path) {
 		try {

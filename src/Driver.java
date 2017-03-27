@@ -22,10 +22,6 @@ public class Driver {
 		ArgumentMap arguments = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex();
 
-		// TODO Delete
-		String file = "apple.html";
-		index.copyPositions("test", file);
-
 		// handle path argument
 		if (arguments.hasFlag("-path")) { // TODO Remove this outer if
 			Path path = null;

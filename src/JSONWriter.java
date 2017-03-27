@@ -61,16 +61,24 @@ public class JSONWriter {
 	 */
 	private static void asArray(Writer writer, TreeSet<Integer> elements, int level) throws IOException {
 		// special formating, editing the following may give you unwanted output
-		writer.append("[\n");
 		Iterator<Integer> it = elements.iterator();
-		while (it.hasNext()) {
-			Integer data = it.next();
-			writer.append(indent(level + 1) + data);
-			if (it.hasNext()) {
-				writer.append(",");
-			}
+		Integer val;
+		
+		writer.append("[");
+		
+		if (it.hasNext()) {
+			val = it.next();
 			writer.append("\n");
+			writer.append(indent(level + 1) + val);
 		}
+		
+		while (it.hasNext()) {
+			val = it.next();
+			writer.append(",\n");
+			writer.append(indent(level + 1) + val);
+		}
+
+		writer.append("\n");
 		writer.append(indent(level) + "]");
 	}
 
