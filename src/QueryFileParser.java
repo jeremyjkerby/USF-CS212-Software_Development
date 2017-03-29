@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+// TODO Javadoc
+
 public class QueryFileParser {
 
 	private final Map<String, List<SearchResult>> map;

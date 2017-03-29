@@ -77,6 +77,7 @@ public class InvertedIndex {
 		// add current position to set
 		positions.add(position);
 
+		// TODO Clean up
 		/*
 		 * if (wordIndex.get(word) == null) { wordIndex.put(word, new
 		 * TreeMap<String, TreeSet<Integer>>()); }
@@ -229,7 +230,7 @@ public class InvertedIndex {
 		// for every query
 		for (String word : words) {
 			// hello, world
-			System.out.println("querying >> " + word);
+			System.out.println("querying >> " + word); // TODO Remove
 			// verify it is in inverted index
 			if (wordIndex.containsKey(word) == true) {
 				// is hello, world in wordIndex?
@@ -264,17 +265,23 @@ public class InvertedIndex {
 
 						SearchResult sr = new SearchResult(where, count, index);
 						resultMap.put(where, sr);
+						// TODO resultList.add(sr);
 					}
 				}
 			}
 
 		}
 
+		// TODO BLAHHHHH
 		Set<String> keys = resultMap.keySet();
 		Iterator<String> it = keys.iterator();
 		while (it.hasNext()) {
 			resultList.add(resultMap.get(it.next()));
 		}
+		// TODO Use addAll instead of adding one at a time
+		// TODO But don't need this at all!
+		
+		
 		Collections.sort(resultList);
 		return resultList;
 	}
@@ -298,6 +305,9 @@ public class InvertedIndex {
 		// for every query
 		for (String word : words) {
 
+			// TODO Linear search means we can do better!
+			// TODO Start/end in the right place
+			// TODO https://github.com/usf-cs212-2017/lectures/blob/master/Data%20Structures/src/FindDemo.java#L144
 			for (String key : keys) {
 				// hello, world
 				// verify it is in inverted index
@@ -311,6 +321,7 @@ public class InvertedIndex {
 					// get locations for this object
 					Set<String> locations = match.keySet();
 
+					// TODO Make this a private helper method so you do not have to duplicate code in both search methods
 					// verify if location is in result
 					for (String location : locations) {
 

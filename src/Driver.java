@@ -1,6 +1,9 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+// TODO Import warnings! Configure Eclipse to Organize Imports on Save and then you never get this again!
+// TODO Look at old TODO comments!
+
 /**
  * Execute this file to run the entire program
  * 
@@ -32,6 +35,7 @@ public class Driver {
 				Path path = Paths.get("index.json");
 				index.toJSON(path);
 			} else {
+				// TODO Only need this part no if/else needed!
 				// we were given -index argument with value
 				Path path = Paths.get(indexPath);
 				index.toJSON(path);
@@ -47,6 +51,8 @@ public class Driver {
 				Path path = Paths.get(queryPath);
 				
 				// determine search type
+				
+				// TODO query.parseQueryFile(path, arguments.hasFlag("-exact"));
 				if (arguments.hasFlag("-exact")) { // perform exact search
 					query.parseQueryFile(path, true);
 				} else { // perform partial search
@@ -57,6 +63,7 @@ public class Driver {
 
 		// handle results argument
 		if (arguments.hasFlag("-results")) {
+			// TODO Use the defaut version... getString("-results", "results.json");
 			String resultsPath = arguments.getString("-results");
 			if (resultsPath != null) {
 				// we were given -results argument with value
