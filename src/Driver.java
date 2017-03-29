@@ -1,9 +1,5 @@
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-
-// TODO Warnings
 
 /**
  * Execute this file to run the entire program
@@ -23,74 +19,53 @@ public class Driver {
 		InvertedIndex index = new InvertedIndex();
 
 		// handle path argument
-		if (arguments.hasFlag("-path")) { // TODO Remove this outer if
-			Path path = null;
-			if (arguments.getString("-path") != null) {
-				path = Paths.get(arguments.getString("-path"));
-				InvertedIndexBuilder.buildIndex(path, index);
-			}
+		if (arguments.getString("-path") != null) {
+			Path path = Paths.get(arguments.getString("-path"));
+			InvertedIndexBuilder.buildIndex(path, index);
 		}
 
 		// handle index argument
 		if (arguments.hasFlag("-index")) {
-			// TODO String path = arguments.getString("-index", "index.json");
-			String indexArgPayload = arguments.getString("-index");
-			if (indexArgPayload == null) {
+			String indexPath = arguments.getString("-index", "index.json");
+			if (indexPath == null) {
 				// we were given -index argument with no value
 				Path path = Paths.get("index.json");
 				index.toJSON(path);
 			} else {
 				// we were given -index argument with value
-				Path path = Paths.get(indexArgPayload);
+				Path path = Paths.get(indexPath);
 				index.toJSON(path);
 			}
 		}
 
-		
-
-		// this needs to be global used in queries search and write
-		ArrayList<SearchResult> output = new ArrayList<SearchResult>();
-
 		// handle query argument
+		QueryFileParser query = new QueryFileParser(index);
 		if (arguments.hasFlag("-query")) {
-			String queryArgPayload = arguments.getString("-query");
-			if (queryArgPayload != null) {
+			String queryPath = arguments.getString("-query");
+			if (queryPath != null) {
 				// we were given -query argument with value
-				Path path = Paths.get(queryArgPayload);
-
-				// TODO
-				ArrayList<String> queryWords = new ArrayList<String>();
-				// for each line you read clean up and prep words
-				Query query = new Query(); // re think this
-				queryWords = query.buildFromFile(path);
+				Path path = Paths.get(queryPath);
 				
-				String[] batchQuery;
-				// determine search type exact/partial
+				// determine search type
 				if (arguments.hasFlag("-exact")) { // perform exact search
-					for (int i = 0; i < queryWords.size(); i++) {
-						batchQuery = queryWords.get(i).split(" ");
-						output.add(index.exactSearch(batchQuery));
-					}
+					query.parseQueryFile(path, true);
 				} else { // perform partial search
-					for (int i = 0; i < queryWords.size(); i++) {
-						batchQuery = queryWords.get(i).split(" ");
-						output.add(index.partialSearch(batchQuery));
-					}
+					query.parseQueryFile(path, false);
 				}
 			}
 		}
 
 		// handle results argument
 		if (arguments.hasFlag("-results")) {
-			String resultArgPayload = arguments.getString("-results");
-			if (resultArgPayload != null) {
+			String resultsPath = arguments.getString("-results");
+			if (resultsPath != null) {
 				// we were given -results argument with value
-				Path path = Paths.get(resultArgPayload);
-				index.saveResults(output, path);
+				Path path = Paths.get(resultsPath);
+				query.toJSON(path);
 			} else {
 				// we were given -results argument with no value
 				Path path = Paths.get("results.json");
-				index.saveResults(output, path);
+				query.toJSON(path);
 			}
 		}
 	}
