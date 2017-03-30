@@ -199,11 +199,13 @@ public class JSONWriter {
 		}
 	}
 
+	// TODO Javadoc and make the indent level a parameter
 	private static void asArray(Writer writer, List<SearchResult> data) throws IOException {
 		
 		writer.append("[\n");
 
 		for (int i = 0; i < data.size(); i++) {
+			// TODO Print search result
 			writer.append(indent(3) + "{\n");
 			writer.append(indent(4) + "\"where\": " + quote(data.get(i).getWhere()) + ",\n");
 			writer.append(indent(4) + "\"count\": " + data.get(i).getCount() + ",\n");
