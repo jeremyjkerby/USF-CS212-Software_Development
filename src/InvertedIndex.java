@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -217,147 +216,90 @@ public class InvertedIndex {
 	 * Perform exact search on InvertedIndex with given words
 	 * 
 	 * @param words
+	 *            words use to look for
 	 * @return sorted list search result
 	 */
 	public List<SearchResult> exactSearch(String[] words) {
-		String where = "";
-		int count = 0;
-		int index = 0;
-
-		List<SearchResult> resultList = new ArrayList<>();
-		Map<String, SearchResult> resultMap = new HashMap<>();
+		resultList = new ArrayList<SearchResult>();
+		resultMap = new HashMap<String, SearchResult>();
 
 		// for every query
 		for (String word : words) {
-			// hello, world
-			System.out.println("querying >> " + word); // TODO Remove
 			// verify it is in inverted index
 			if (wordIndex.containsKey(word) == true) {
-				// is hello, world in wordIndex?
-
 				// get word index object
 				TreeMap<String, TreeSet<Integer>> match = wordIndex.get(word);
-				System.out.println("we found  >> " + match.toString());
-
-				// get locations for this object
-				Set<String> locations = match.keySet();
-
-				// verify if location is in result
-				for (String location : locations) {
-
-					System.out.println("we found in file >> " + location);
-					System.out.println("result Map keys >> " + resultMap.keySet().toString());
-					where = location;
-					count = match.get(location).size();
-					index = match.get(location).first();
-
-					if (resultMap.containsKey(location)) {
-						// if this location is in our resultMap
-						// update an existing search result
-						System.out.println("we already have file ");
-
-						SearchResult sr = resultMap.get(location);
-						sr.addCount(count);
-						sr.updateIndex(index);
-					} else {
-						// add a new search result to our map
-						System.out.println("we dont have file ");
-
-						SearchResult sr = new SearchResult(where, count, index);
-						resultMap.put(where, sr);
-						// TODO resultList.add(sr);
-					}
-				}
+				helper(match);
 			}
-
 		}
 
-		// TODO BLAHHHHH
-		Set<String> keys = resultMap.keySet();
-		Iterator<String> it = keys.iterator();
-		while (it.hasNext()) {
-			resultList.add(resultMap.get(it.next()));
-		}
-		// TODO Use addAll instead of adding one at a time
-		// TODO But don't need this at all!
-		
-		
 		Collections.sort(resultList);
+
 		return resultList;
 	}
+
+	List<SearchResult> resultList;
+	Map<String, SearchResult> resultMap;
 
 	/**
 	 * Perform partial search on InvertedIndex with given words
 	 * 
 	 * @param words
+	 *            words use to look for
 	 * @return sorted list search result
 	 */
 	public List<SearchResult> partialSearch(String[] words) {
-		String where = "";
-		int count = 0;
-		int index = 0;
 
-		List<SearchResult> resultList = new ArrayList<>();
-		Map<String, SearchResult> resultMap = new HashMap<>();
+		resultList = new ArrayList<SearchResult>();
+		resultMap = new HashMap<String, SearchResult>();
 
 		Set<String> keys = wordIndex.keySet();
-		
+
 		// for every query
 		for (String word : words) {
 
 			// TODO Linear search means we can do better!
 			// TODO Start/end in the right place
-			// TODO https://github.com/usf-cs212-2017/lectures/blob/master/Data%20Structures/src/FindDemo.java#L144
+			// TODO
+			// https://github.com/usf-cs212-2017/lectures/blob/master/Data%20Structures/src/FindDemo.java#L144
 			for (String key : keys) {
-				// hello, world
 				// verify it is in inverted index
 				if (key.startsWith(word)) {
-					// does wordIndex word start with hello, world?
-
 					// get word index object
 					TreeMap<String, TreeSet<Integer>> match = wordIndex.get(key);
-					//System.out.println("we found  >> " + match.toString());
-
-					// get locations for this object
-					Set<String> locations = match.keySet();
-
-					// TODO Make this a private helper method so you do not have to duplicate code in both search methods
-					// verify if location is in result
-					for (String location : locations) {
-
-						//System.out.println("we found in file >> " + location);
-						//System.out.println("result Map keys >> " + resultMap.keySet().toString());
-						where = location;
-						count = match.get(location).size();
-						index = match.get(location).first();
-
-						if (resultMap.containsKey(location)) {
-							// if this location is in our resultMap
-							// update an existing search result
-							//System.out.println("we already have file ");
-
-							SearchResult sr = resultMap.get(location);
-							sr.addCount(count);
-							sr.updateIndex(index);
-						} else {
-							// add a new search result to our map
-							//System.out.println("we dont have file ");
-
-							SearchResult sr = new SearchResult(where, count, index);
-							resultMap.put(where, sr);
-						}
-					}
-				} // if starts with
-			} // inner for
-		} // out for
-
-		Set<String> keys2 = resultMap.keySet();
-		Iterator<String> it = keys2.iterator();
-		while (it.hasNext()) {
-			resultList.add(resultMap.get(it.next()));
+					helper(match);
+				}
+			}
 		}
+
 		Collections.sort(resultList);
+
 		return resultList;
+	}
+
+	private void helper(TreeMap<String, TreeSet<Integer>> match) {
+		// get locations for this object
+		Set<String> locations = match.keySet();
+
+		// verify if location is in result
+		for (String location : locations) {
+			String where = location;
+			int count = match.get(location).size();
+			int index = match.get(location).first();
+
+			if (resultMap.containsKey(location)) {
+				// if this location is in our resultMap
+				// update an existing search result
+				SearchResult sr = resultMap.get(location);
+				sr.addCount(count);
+				sr.updateIndex(index);
+			} else {
+				// add a new search result to our map
+				SearchResult sr = new SearchResult(where, count, index);
+				resultMap.put(where, sr);
+				resultList.add(sr);
+			}
+		}
 	}
 
 }

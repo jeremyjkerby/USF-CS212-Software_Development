@@ -1,11 +1,8 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-// TODO Import warnings! Configure Eclipse to Organize Imports on Save and then you never get this again!
-// TODO Look at old TODO comments!
-
 /**
- * Execute this file to run the entire program
+ * Execute this file to run the entire program.
  * 
  * @author Jeremy Kerby
  *
@@ -13,7 +10,7 @@ import java.nio.file.Paths;
 public class Driver {
 
 	/**
-	 * This is the main method to call functionality of application
+	 * This is the main method to call functionality of application.
 	 * 
 	 * @param args
 	 */
@@ -29,17 +26,9 @@ public class Driver {
 
 		// handle index argument
 		if (arguments.hasFlag("-index")) {
-			String indexPath = arguments.getString("-index", "index.json");
-			if (indexPath == null) {
-				// we were given -index argument with no value
-				Path path = Paths.get("index.json");
-				index.toJSON(path);
-			} else {
-				// TODO Only need this part no if/else needed!
-				// we were given -index argument with value
-				Path path = Paths.get(indexPath);
-				index.toJSON(path);
-			}
+			// we were given -index argument with value
+			Path path = Paths.get(arguments.getString("-index", "index.json"));
+			index.toJSON(path);
 		}
 
 		// handle query argument
@@ -49,31 +38,16 @@ public class Driver {
 			if (queryPath != null) {
 				// we were given -query argument with value
 				Path path = Paths.get(queryPath);
-				
 				// determine search type
-				
-				// TODO query.parseQueryFile(path, arguments.hasFlag("-exact"));
-				if (arguments.hasFlag("-exact")) { // perform exact search
-					query.parseQueryFile(path, true);
-				} else { // perform partial search
-					query.parseQueryFile(path, false);
-				}
+				query.parseQueryFile(path, arguments.hasFlag("-exact"));
 			}
 		}
 
 		// handle results argument
 		if (arguments.hasFlag("-results")) {
-			// TODO Use the defaut version... getString("-results", "results.json");
-			String resultsPath = arguments.getString("-results");
-			if (resultsPath != null) {
-				// we were given -results argument with value
-				Path path = Paths.get(resultsPath);
-				query.toJSON(path);
-			} else {
-				// we were given -results argument with no value
-				Path path = Paths.get("results.json");
-				query.toJSON(path);
-			}
+			// we were given -results argument with no value
+			Path path = Paths.get(arguments.getString("-results", "results.json"));
+			query.toJSON(path);
 		}
 	}
 

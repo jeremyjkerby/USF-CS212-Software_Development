@@ -4,37 +4,47 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-// TODO Javadoc
-
+/**
+ * Reads data to query. Determines what search to take. Executes search. Writes
+ * results to file.
+ * 
+ */
 public class QueryFileParser {
 
 	private final Map<String, List<SearchResult>> map;
 	private final InvertedIndex index;
 
+	/**
+	 * Initialize the QueryFileParser. Requires an InvertedIndex.
+	 * 
+	 * @param index
+	 *            InvertedIndex that will be used to search
+	 */
 	public QueryFileParser(InvertedIndex index) {
 		this.index = index;
 		map = new TreeMap<String, List<SearchResult>>();
 	}
 
+	/**
+	 * Read from file line by line. Clean and sort words. Determine then perform
+	 * query.
+	 * 
+	 * @param path
+	 *            location of where query file is
+	 * @param exact
+	 *            true if exact false if partial
+	 */
 	public void parseQueryFile(Path path, boolean exact) {
-		// handle search in ii file
-		// handle how to write search to file
-
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-
 			String line;
 			while ((line = reader.readLine()) != null) {
 				// for each line in file clean and separate into words
 				String cleanedTemp[] = WordParser.parseWords(line);
-
 				Arrays.sort(cleanedTemp);
-
 				// perform search
 				List<SearchResult> results;
 				if (exact == true) {
@@ -43,18 +53,21 @@ public class QueryFileParser {
 				} else {
 					results = index.partialSearch(cleanedTemp);
 					if (String.join(" ", cleanedTemp).compareTo("") != 0)
-					map.put(String.join(" ", cleanedTemp), results);
+						map.put(String.join(" ", cleanedTemp), results);
 				}
-
 			}
 		} catch (IOException e) {
 			System.out.println("Unable to read query file");
 		}
-
 	}
 
+	/**
+	 * Writes map of results to given path.
+	 * 
+	 * @param path
+	 *            where the result map will be written to
+	 */
 	public void toJSON(Path path) {
-		
 		try {
 			JSONWriter.searchResults(map, path);
 		} catch (IOException e) {

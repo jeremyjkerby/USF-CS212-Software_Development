@@ -10,9 +10,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -65,15 +63,15 @@ public class JSONWriter {
 		// special formating, editing the following may give you unwanted output
 		Iterator<Integer> it = elements.iterator();
 		Integer val;
-		
+
 		writer.append("[");
-		
+
 		if (it.hasNext()) {
 			val = it.next();
 			writer.append("\n");
 			writer.append(indent(level + 1) + val);
 		}
-		
+
 		while (it.hasNext()) {
 			val = it.next();
 			writer.append(",\n");
@@ -175,47 +173,72 @@ public class JSONWriter {
 		}
 	}
 
+	/**
+	 * Writes search result map to given path.
+	 * 
+	 * @param map
+	 *            search results to write to file
+	 * @param path
+	 *            where to save
+	 * @throws IOException
+	 */
 	public static void searchResults(Map<String, List<SearchResult>> map, Path path) throws IOException {
-		System.out.println("writing json to file map of size " + map.size());
+		// special formating, editing the following may give you unwanted output
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			writer.append("[\n");
-
-			// should probably use key set and use that as loop
+			int i = 1;
 			Set<String> keys = map.keySet();
 			Iterator<String> it = keys.iterator();
 			while (it.hasNext()) {
 				String search = it.next();
-				writer.append(indent(1) + "{\n");
-				writer.append(indent(2) + "\"queries\": " + quote(search) + ",\n");
-				writer.append(indent(2) + "\"results\": ");
-				asArray(writer, map.get(search));
-				writer.append("\n" + indent(1) + "}");
+				writer.append(indent(i) + "{\n");
+				i++;
+				writer.append(indent(i) + "\"queries\": " + quote(search) + ",\n");
+				writer.append(indent(i) + "\"results\": ");
+				asArray(writer, map.get(search), i);
+				--i;
+				writer.append("\n" + indent(i) + "}");
+
 				if (it.hasNext()) {
 					writer.append(",");
 				}
 				writer.append("\n");
 			}
+
 			writer.append("]");
 		}
 	}
 
-	// TODO Javadoc and make the indent level a parameter
-	private static void asArray(Writer writer, List<SearchResult> data) throws IOException {
-		
+	/**
+	 * Writes given List as human readable array. Helper method for
+	 * searchResults().
+	 * 
+	 * @param writer
+	 *            writer used to write
+	 * @param data
+	 *            writes the given data
+	 * @param level
+	 *            level of indent
+	 * @throws IOException
+	 */
+	private static void asArray(Writer writer, List<SearchResult> data, int level) throws IOException {
+		// special formating, editing the following may give you unwanted output
 		writer.append("[\n");
-
+		level++;
 		for (int i = 0; i < data.size(); i++) {
-			// TODO Print search result
-			writer.append(indent(3) + "{\n");
-			writer.append(indent(4) + "\"where\": " + quote(data.get(i).getWhere()) + ",\n");
-			writer.append(indent(4) + "\"count\": " + data.get(i).getCount() + ",\n");
-			writer.append(indent(4) + "\"index\": " + data.get(i).getIndex() + "\n");
+			writer.append(indent(level) + "{\n");
+			level++;
+			writer.append(indent(level) + "\"where\": " + quote(data.get(i).getWhere()) + ",\n");
+			writer.append(indent(level) + "\"count\": " + data.get(i).getCount() + ",\n");
+			writer.append(indent(level) + "\"index\": " + data.get(i).getIndex() + "\n");
+			--level;
 			if (i != data.size() - 1) {
-				writer.append(indent(3) + "},\n");
+				writer.append(indent(level) + "},\n");
 			} else {
-				writer.append(indent(3) + "}\n");
+				writer.append(indent(level) + "}\n");
 			}
 		}
-		writer.append(indent(2) + "]");
+		--level;
+		writer.append(indent(level) + "]");
 	}
 }
