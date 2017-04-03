@@ -26,6 +26,9 @@ public class InvertedIndex {
 	 */
 	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
 
+	private List<SearchResult> resultList;
+	private Map<String, SearchResult> resultMap;
+
 	/**
 	 * Initializes the index. For every key (word) of the outer HashMap the
 	 * value is an inner HashMap. For every key (file) of inner HashMap the
@@ -46,46 +49,17 @@ public class InvertedIndex {
 	 *            position word was found
 	 */
 	public void add(String word, String file, int position) {
-		TreeMap<String, TreeSet<Integer>> innerData;
-		TreeSet<Integer> positions = null;
-
-		// get inner TreeMap for given word
-		innerData = wordIndex.get(word);
 		// inner TreeMap does not exist so create it
-		if (innerData == null) {
-			innerData = new TreeMap<String, TreeSet<Integer>>();
-
-			// add updated list into innerData
-			innerData.put(file, positions);
-			// add updated innerData into index
-			wordIndex.put(word, innerData);
+		if (wordIndex.get(word) == null) {
+			wordIndex.put(word, new TreeMap<String, TreeSet<Integer>>());
 		}
-
-		// get inner most TreeSet
-		positions = innerData.get(file);
 		// inner TreeSet does not exist so create it
-		if (positions == null) {
-			positions = new TreeSet<Integer>();
-
-			// add updated list into innerData
-			innerData.put(file, positions);
-			// add updated innerData into index
-			wordIndex.put(word, innerData);
+		if (wordIndex.get(word).get(file) == null) {
+			wordIndex.get(word).put(file, new TreeSet<Integer>());
 		}
 
 		// add current position to set
-		positions.add(position);
-
-		// TODO Clean up
-		/*
-		 * if (wordIndex.get(word) == null) { wordIndex.put(word, new
-		 * TreeMap<String, TreeSet<Integer>>()); }
-		 * 
-		 * if (wordIndex.get(word).get(file) == null) {
-		 * wordIndex.get(word).put(word, new TreeSet<Integer>()); }
-		 * 
-		 * wordIndex.get(word).get(file).add(position);
-		 */
+		wordIndex.get(word).get(file).add(position);
 	}
 
 	/**
@@ -229,17 +203,12 @@ public class InvertedIndex {
 			if (wordIndex.containsKey(word) == true) {
 				// get word index object
 				TreeMap<String, TreeSet<Integer>> match = wordIndex.get(word);
-				helper(match);
+				determineAddUpdate(match);
 			}
 		}
-
 		Collections.sort(resultList);
-
 		return resultList;
 	}
-
-	List<SearchResult> resultList;
-	Map<String, SearchResult> resultMap;
 
 	/**
 	 * Perform partial search on InvertedIndex with given words
@@ -253,31 +222,33 @@ public class InvertedIndex {
 		resultList = new ArrayList<SearchResult>();
 		resultMap = new HashMap<String, SearchResult>();
 
-		Set<String> keys = wordIndex.keySet();
-
 		// for every query
 		for (String word : words) {
 
-			// TODO Linear search means we can do better!
-			// TODO Start/end in the right place
-			// TODO
-			// https://github.com/usf-cs212-2017/lectures/blob/master/Data%20Structures/src/FindDemo.java#L144
+			// get words greater than or equal to word
+			Set<String> keys = wordIndex.tailMap(word).keySet();
+
 			for (String key : keys) {
 				// verify it is in inverted index
 				if (key.startsWith(word)) {
 					// get word index object
 					TreeMap<String, TreeSet<Integer>> match = wordIndex.get(key);
-					helper(match);
+					determineAddUpdate(match);
 				}
 			}
 		}
-
 		Collections.sort(resultList);
-
 		return resultList;
 	}
 
-	private void helper(TreeMap<String, TreeSet<Integer>> match) {
+	/**
+	 * Determine if given match needs to be added or updated. This is a helper
+	 * method used in both exact and partial search.
+	 * 
+	 * @param match
+	 *            object to either add or updated into our results
+	 */
+	private void determineAddUpdate(TreeMap<String, TreeSet<Integer>> match) {
 		// get locations for this object
 		Set<String> locations = match.keySet();
 
