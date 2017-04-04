@@ -47,6 +47,10 @@ public class QueryFileParser {
 				}
 				// // for each line in file clean and separate into words
 				String cleanedTemp[] = WordParser.parseWords(line);
+				
+				// TODO Check cleanedTemp instead of line (should be an empty array?)
+				
+				
 				Arrays.sort(cleanedTemp);
 				// perform search
 				List<SearchResult> results;
