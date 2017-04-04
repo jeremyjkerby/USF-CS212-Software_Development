@@ -118,7 +118,7 @@ public class JSONWriter {
 			while (it.hasNext()) {
 				String data = it.next();
 				writer.write(indent(level) + quote(data) + ": " + elements.get(data));
-				if (it.hasNext()) {
+				if (it.hasNext()) { // TODO if inside of a while, use thte same approach as asArray
 					writer.append(",");
 				}
 				writer.append("\n");
@@ -127,6 +127,8 @@ public class JSONWriter {
 			writer.write("}");
 		}
 	}
+	
+	// TODO Create a helper for TreeMap<String, TreeSet<Integer>>, this calls asArray
 
 	/**
 	 * Writes the set of elements as a JSON object with a nested array to the
@@ -144,6 +146,8 @@ public class JSONWriter {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			writer.append("{\n");
 
+			// TODO No if inside loops
+			
 			Set<String> keys = elements.keySet();
 			Iterator<String> it = keys.iterator();
 			while (it.hasNext()) {
@@ -186,6 +190,9 @@ public class JSONWriter {
 		// special formating, editing the following may give you unwanted output
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			writer.append("[\n");
+			
+			// TODO if inside the while
+			
 			int i = 1;
 			Set<String> keys = map.keySet();
 			Iterator<String> it = keys.iterator();
