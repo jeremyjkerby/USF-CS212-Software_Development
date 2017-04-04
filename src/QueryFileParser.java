@@ -42,10 +42,10 @@ public class QueryFileParser {
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {
-//				if line is empty
-//					continue				
-				
-				// for each line in file clean and separate into words
+				if (line.replaceAll("\\d", "").trim().compareTo("") == 0) {
+					continue;
+				}
+				// // for each line in file clean and separate into words
 				String cleanedTemp[] = WordParser.parseWords(line);
 				Arrays.sort(cleanedTemp);
 				// perform search
@@ -55,8 +55,8 @@ public class QueryFileParser {
 					map.put(String.join(" ", cleanedTemp), results);
 				} else {
 					results = index.partialSearch(cleanedTemp);
-					if (String.join(" ", cleanedTemp).compareTo("") != 0)
-						map.put(String.join(" ", cleanedTemp), results);
+					map.put(String.join(" ", cleanedTemp), results);
+
 				}
 			}
 		} catch (IOException e) {

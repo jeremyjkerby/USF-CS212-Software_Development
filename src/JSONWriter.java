@@ -110,25 +110,25 @@ public class JSONWriter {
 	public static void asObject(TreeMap<String, Integer> elements, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			int level = 1;
-			writer.write("{\n");
+			writer.append("{\n");
 
 			Set<String> keys = elements.keySet();
 			Iterator<String> it = keys.iterator();
 
-			while (it.hasNext()) {
+			if (it.hasNext()) {
 				String data = it.next();
-				writer.write(indent(level) + quote(data) + ": " + elements.get(data));
-				if (it.hasNext()) { // TODO if inside of a while, use thte same approach as asArray
-					writer.append(",");
-				}
-				writer.append("\n");
+				writer.append(indent(level) + quote(data) + ": " + elements.get(data));
 			}
 
-			writer.write("}");
+			while (it.hasNext()) {
+				String data = it.next();
+				writer.append(",\n");
+				writer.append(indent(level) + quote(data) + ": " + elements.get(data));
+			}
+
+			writer.append("\n}");
 		}
 	}
-	
-	// TODO Create a helper for TreeMap<String, TreeSet<Integer>>, this calls asArray
 
 	/**
 	 * Writes the set of elements as a JSON object with a nested array to the
@@ -144,36 +144,64 @@ public class JSONWriter {
 			throws IOException {
 		// special formating, editing the following may give you unwanted output
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			writer.append("{\n");
-
-			// TODO No if inside loops
-			
 			Set<String> keys = elements.keySet();
 			Iterator<String> it = keys.iterator();
-			while (it.hasNext()) {
-				String data = it.next();
-				writer.append(indent(1) + quote(data) + ": {");
+			int level = 1;
 
-				TreeMap<String, TreeSet<Integer>> innerData = elements.get(data);
-				Set<String> innerKeys = innerData.keySet();
-				Iterator<String> it2 = innerKeys.iterator();
+			writer.append("{");
 
-				while (it2.hasNext()) {
-					String data2 = it2.next();
-					writer.append("\n" + indent(2) + quote(data2) + ": ");
-					asArray(writer, innerData.get(data2), 2);
-					if (it2.hasNext()) {
-						writer.append(",");
-					}
-				}
-
-				writer.append("\n" + indent(1) + "}");
-				if (it.hasNext()) {
-					writer.append(",");
-				}
+			if (it.hasNext()) {
+				String val = it.next();
 				writer.append("\n");
+
+				writer.append(indent(level) + quote(val) + ": {");
+				level++;
+				asNestedObjectHelper(writer, elements.get(val), level);
+				--level;
+				writer.append("\n" + indent(level) + "}");
 			}
-			writer.append("}");
+
+			while (it.hasNext()) {
+				String val = it.next();
+				writer.append(",\n");
+				writer.append(indent(level) + quote(val) + ": {");
+				level++;
+				asNestedObjectHelper(writer, elements.get(val), level);
+				--level;
+				writer.append("\n" + indent(level) + "}");
+			}
+
+			writer.append("\n}");
+		}
+	}
+
+	/**
+	 * Writes given TreeMap as human readable. Helper method for
+	 * asNestedObject().
+	 * 
+	 * @param writer
+	 * @param data
+	 * @param level
+	 * @throws IOException
+	 */
+	private static void asNestedObjectHelper(Writer writer, TreeMap<String, TreeSet<Integer>> data, int level)
+			throws IOException {
+		Set<String> innerKeys = data.keySet();
+		Iterator<String> it = innerKeys.iterator();
+
+		if (it.hasNext()) {
+			String val = it.next();
+			writer.append("\n");
+			writer.append(indent(level) + quote(val) + ": ");
+			asArray(writer, data.get(val), level);
+
+		}
+
+		while (it.hasNext()) {
+			String val = it.next();
+			writer.append(",\n");
+			writer.append(indent(level) + quote(val) + ": ");
+			asArray(writer, data.get(val), level);
 		}
 	}
 
@@ -187,32 +215,38 @@ public class JSONWriter {
 	 * @throws IOException
 	 */
 	public static void searchResults(Map<String, List<SearchResult>> map, Path path) throws IOException {
+
 		// special formating, editing the following may give you unwanted output
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			writer.append("[\n");
-			
-			// TODO if inside the while
-			
-			int i = 1;
+			int level = 1;
 			Set<String> keys = map.keySet();
 			Iterator<String> it = keys.iterator();
-			while (it.hasNext()) {
-				String search = it.next();
-				writer.append(indent(i) + "{\n");
-				i++;
-				writer.append(indent(i) + "\"queries\": " + quote(search) + ",\n");
-				writer.append(indent(i) + "\"results\": ");
-				asArray(writer, map.get(search), i);
-				--i;
-				writer.append("\n" + indent(i) + "}");
+			writer.append("[\n");
 
-				if (it.hasNext()) {
-					writer.append(",");
-				}
-				writer.append("\n");
+			if (it.hasNext()) {
+				String val = it.next();
+				writer.append(indent(level) + "{\n");
+				level++;
+				writer.append(indent(level) + "\"queries\": " + quote(val) + ",\n");
+				writer.append(indent(level) + "\"results\": ");
+				asArray(writer, map.get(val), level);
+				--level;
+				writer.append("\n" + indent(level) + "}");
+
 			}
 
-			writer.append("]");
+			while (it.hasNext()) {
+				String val = it.next();
+				writer.append(",\n");
+				writer.append(indent(level) + "{\n");
+				level++;
+				writer.append(indent(level) + "\"queries\": " + quote(val) + ",\n");
+				writer.append(indent(level) + "\"results\": ");
+				asArray(writer, map.get(val), level);
+				--level;
+				writer.append("\n" + indent(level) + "}");
+			}
+			writer.append("\n]");
 		}
 	}
 

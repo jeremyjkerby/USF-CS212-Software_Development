@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -25,10 +24,6 @@ public class InvertedIndex {
 	 * Stores a mapping of words to the positions the words were found.
 	 */
 	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
-
-	// TODO Remove, should be either parameters/local variables
-	private List<SearchResult> resultList;
-	private Map<String, SearchResult> resultMap;
 
 	/**
 	 * Initializes the index. For every key (word) of the outer HashMap the
@@ -195,8 +190,8 @@ public class InvertedIndex {
 	 * @return sorted list search result
 	 */
 	public List<SearchResult> exactSearch(String[] words) {
-		resultList = new ArrayList<SearchResult>();
-		resultMap = new HashMap<String, SearchResult>();
+		List<SearchResult> resultList = new ArrayList<SearchResult>();
+		HashMap<String, SearchResult> resultMap = new HashMap<String, SearchResult>();
 
 		// for every query
 		for (String word : words) {
@@ -204,7 +199,7 @@ public class InvertedIndex {
 			if (wordIndex.containsKey(word) == true) {
 				// get word index object
 				TreeMap<String, TreeSet<Integer>> match = wordIndex.get(word);
-				determineAddUpdate(match); // TODO (match, resultList, resultMap)
+				determineAddUpdate(match, resultList, resultMap);
 			}
 		}
 		Collections.sort(resultList);
@@ -220,8 +215,8 @@ public class InvertedIndex {
 	 */
 	public List<SearchResult> partialSearch(String[] words) {
 
-		resultList = new ArrayList<SearchResult>();
-		resultMap = new HashMap<String, SearchResult>();
+		List<SearchResult> resultList = new ArrayList<SearchResult>();
+		HashMap<String, SearchResult> resultMap = new HashMap<String, SearchResult>();
 
 		// for every query
 		for (String word : words) {
@@ -234,9 +229,10 @@ public class InvertedIndex {
 				if (key.startsWith(word)) {
 					// get word index object
 					TreeMap<String, TreeSet<Integer>> match = wordIndex.get(key);
-					determineAddUpdate(match);
+					determineAddUpdate(match, resultList, resultMap);
+				} else {
+					break;
 				}
-				// TODO else break
 			}
 		}
 		Collections.sort(resultList);
@@ -249,8 +245,11 @@ public class InvertedIndex {
 	 * 
 	 * @param match
 	 *            object to either add or updated into our results
+	 * @param resultMap
+	 * @param resultList
 	 */
-	private void determineAddUpdate(TreeMap<String, TreeSet<Integer>> match) {
+	private void determineAddUpdate(TreeMap<String, TreeSet<Integer>> match, List<SearchResult> resultList,
+			HashMap<String, SearchResult> resultMap) {
 		// get locations for this object
 		Set<String> locations = match.keySet();
 
