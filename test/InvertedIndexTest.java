@@ -127,7 +127,7 @@ public class InvertedIndexTest {
 
 		@Test
 		public void test04InvalidWordsOneFilePart() {
-			String query[] = { "", "$" };
+			String query[] = { " ", "$" };
 			ii.addAll(pokemon, "simple/test.html");
 			ii.addAll(characters, "simple/exam.html");
 			List<SearchResult> result = ii.partialSearch(query);
