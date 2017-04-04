@@ -42,6 +42,9 @@ public class QueryFileParser {
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {
+//				if line is empty
+//					continue				
+				
 				// for each line in file clean and separate into words
 				String cleanedTemp[] = WordParser.parseWords(line);
 				Arrays.sort(cleanedTemp);

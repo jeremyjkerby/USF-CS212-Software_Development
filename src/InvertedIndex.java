@@ -26,6 +26,7 @@ public class InvertedIndex {
 	 */
 	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
 
+	// TODO Remove, should be either parameters/local variables
 	private List<SearchResult> resultList;
 	private Map<String, SearchResult> resultMap;
 
@@ -203,7 +204,7 @@ public class InvertedIndex {
 			if (wordIndex.containsKey(word) == true) {
 				// get word index object
 				TreeMap<String, TreeSet<Integer>> match = wordIndex.get(word);
-				determineAddUpdate(match);
+				determineAddUpdate(match); // TODO (match, resultList, resultMap)
 			}
 		}
 		Collections.sort(resultList);
@@ -235,6 +236,7 @@ public class InvertedIndex {
 					TreeMap<String, TreeSet<Integer>> match = wordIndex.get(key);
 					determineAddUpdate(match);
 				}
+				// TODO else break
 			}
 		}
 		Collections.sort(resultList);
