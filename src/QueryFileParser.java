@@ -58,7 +58,6 @@ public class QueryFileParser {
 				} else {
 					results = index.partialSearch(cleanedTemp);
 					map.put(String.join(" ", cleanedTemp), results);
-
 				}
 			}
 		} catch (IOException e) {
