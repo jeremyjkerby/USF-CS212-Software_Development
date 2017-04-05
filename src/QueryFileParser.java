@@ -42,15 +42,13 @@ public class QueryFileParser {
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (line.replaceAll("\\d", "").trim().compareTo("") == 0) {
+				// for each line in file clean and separate into words
+				String cleanedTemp[] = WordParser.parseWords(line);
+
+				if (cleanedTemp.length == 0) {
 					continue;
 				}
-				// // for each line in file clean and separate into words
-				String cleanedTemp[] = WordParser.parseWords(line);
-				
-				// TODO Check cleanedTemp instead of line (should be an empty array?)
-				
-				
+
 				Arrays.sort(cleanedTemp);
 				// perform search
 				List<SearchResult> results;
