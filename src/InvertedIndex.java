@@ -24,6 +24,7 @@ public class InvertedIndex {
 	 * Stores a mapping of words to the positions the words were found.
 	 */
 	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordIndex;
+	private ReadWriteLock lock;
 
 	/**
 	 * Initializes the index. For every key (word) of the outer HashMap the
@@ -32,6 +33,7 @@ public class InvertedIndex {
 	 */
 	public InvertedIndex() {
 		wordIndex = new TreeMap<String, TreeMap<String, TreeSet<Integer>>>();
+		lock = new ReadWriteLock();
 	}
 
 	/**
@@ -46,16 +48,23 @@ public class InvertedIndex {
 	 */
 	public void add(String word, String file, int position) {
 		// inner TreeMap does not exist so create it
-		if (wordIndex.get(word) == null) {
-			wordIndex.put(word, new TreeMap<String, TreeSet<Integer>>());
-		}
-		// inner TreeSet does not exist so create it
-		if (wordIndex.get(word).get(file) == null) {
-			wordIndex.get(word).put(file, new TreeSet<Integer>());
-		}
+		lock.lockReadWrite();
+		try {
 
-		// add current position to set
-		wordIndex.get(word).get(file).add(position);
+			if (wordIndex.get(word) == null) {
+				wordIndex.put(word, new TreeMap<String, TreeSet<Integer>>());
+			}
+			// inner TreeSet does not exist so create it
+			if (wordIndex.get(word).get(file) == null) {
+				wordIndex.get(word).put(file, new TreeSet<Integer>());
+			}
+
+			// add current position to set
+			wordIndex.get(word).get(file).add(position);
+
+		} finally {
+			lock.unlockReadWrite();
+		}
 	}
 
 	/**
@@ -83,10 +92,12 @@ public class InvertedIndex {
 	 *            filename origin of words
 	 */
 	public void addAll(String[] words, int start, String filename) {
+
 		for (int i = 0; i < words.length; i++) {
 			add(words[i], filename, start);
 			start++;
 		}
+
 	}
 
 	/**
@@ -98,10 +109,15 @@ public class InvertedIndex {
 	 * @return number of times the word was found
 	 */
 	public int count(String word) {
-		if (wordIndex.get(word) != null) {
-			return wordIndex.get(word).size();
-		} else {
-			return 0;
+		lock.lockReadOnly();
+		try {
+			if (wordIndex.get(word) != null) {
+				return wordIndex.get(word).size();
+			} else {
+				return 0;
+			}
+		} finally {
+			lock.unlockReadOnly();
 		}
 	}
 
@@ -111,7 +127,12 @@ public class InvertedIndex {
 	 * @return number of words
 	 */
 	public int words() {
-		return wordIndex.size();
+		lock.lockReadOnly();
+		try {
+			return wordIndex.size();
+		} finally {
+			lock.unlockReadOnly();
+		}
 	}
 
 	/**
@@ -122,7 +143,12 @@ public class InvertedIndex {
 	 * @return true if the word is stored in the index
 	 */
 	public boolean contains(String word) {
-		return wordIndex.containsKey(word);
+		lock.lockReadOnly();
+		try {
+			return wordIndex.containsKey(word);
+		} finally {
+			lock.unlockReadOnly();
+		}
 	}
 
 	/**
@@ -134,8 +160,13 @@ public class InvertedIndex {
 	 * @see Collections#sort(List)
 	 */
 	public List<String> copyWords() {
-		List<String> words = new ArrayList<String>(wordIndex.keySet());
-		return words;
+		lock.lockReadOnly();
+		try {
+			List<String> words = new ArrayList<String>(wordIndex.keySet());
+			return words;
+		} finally {
+			lock.unlockReadOnly();
+		}
 	}
 
 	/**
@@ -151,11 +182,16 @@ public class InvertedIndex {
 	 * @see Collections#sort(List)
 	 */
 	public List<Integer> copyPositions(String word, String file) {
-		List<Integer> words = null;
-		if (wordIndex.get(word) != null) {
-			words = new ArrayList<Integer>(wordIndex.get(word).get(file));
+		lock.lockReadOnly();
+		try {
+			List<Integer> words = null;
+			if (wordIndex.get(word) != null) {
+				words = new ArrayList<Integer>(wordIndex.get(word).get(file));
+			}
+			return words;
+		} finally {
+			lock.unlockReadOnly();
 		}
-		return words;
 	}
 
 	/**
@@ -165,7 +201,12 @@ public class InvertedIndex {
 	 */
 	@Override
 	public String toString() {
-		return wordIndex.toString();
+		lock.lockReadOnly();
+		try {
+			return wordIndex.toString();
+		} finally {
+			lock.unlockReadOnly();
+		}
 	}
 
 	/**
@@ -175,10 +216,15 @@ public class InvertedIndex {
 	 *            where to save
 	 */
 	public void toJSON(Path path) {
+		lock.lockReadOnly();
 		try {
-			JSONWriter.asNestedObject(wordIndex, path);
-		} catch (IOException e) {
-			System.out.println("Unable to write JSON to file");
+			try {
+				JSONWriter.asNestedObject(wordIndex, path);
+			} catch (IOException e) {
+				System.out.println("Unable to write JSON to file");
+			}
+		} finally {
+			lock.unlockReadOnly();
 		}
 	}
 
@@ -190,20 +236,25 @@ public class InvertedIndex {
 	 * @return sorted list search result
 	 */
 	public List<SearchResult> exactSearch(String[] words) {
-		List<SearchResult> resultList = new ArrayList<SearchResult>();
-		HashMap<String, SearchResult> resultMap = new HashMap<String, SearchResult>();
+		lock.lockReadOnly();
+		try {
+			List<SearchResult> resultList = new ArrayList<SearchResult>();
+			HashMap<String, SearchResult> resultMap = new HashMap<String, SearchResult>();
 
-		// for every query
-		for (String word : words) {
-			// verify it is in inverted index
-			if (wordIndex.containsKey(word) == true) {
-				// get word index object
-				TreeMap<String, TreeSet<Integer>> match = wordIndex.get(word);
-				determineAddUpdate(match, resultList, resultMap);
+			// for every query
+			for (String word : words) {
+				// verify it is in inverted index
+				if (wordIndex.containsKey(word) == true) {
+					// get word index object
+					TreeMap<String, TreeSet<Integer>> match = wordIndex.get(word);
+					determineAddUpdate(match, resultList, resultMap);
+				}
 			}
+			Collections.sort(resultList);
+			return resultList;
+		} finally {
+			lock.unlockReadOnly();
 		}
-		Collections.sort(resultList);
-		return resultList;
 	}
 
 	/**
@@ -214,29 +265,33 @@ public class InvertedIndex {
 	 * @return sorted list search result
 	 */
 	public List<SearchResult> partialSearch(String[] words) {
+		lock.lockReadOnly();
+		try {
+			List<SearchResult> resultList = new ArrayList<SearchResult>();
+			HashMap<String, SearchResult> resultMap = new HashMap<String, SearchResult>();
 
-		List<SearchResult> resultList = new ArrayList<SearchResult>();
-		HashMap<String, SearchResult> resultMap = new HashMap<String, SearchResult>();
+			// for every query
+			for (String word : words) {
 
-		// for every query
-		for (String word : words) {
+				// get words greater than or equal to word
+				Set<String> keys = wordIndex.tailMap(word).keySet();
 
-			// get words greater than or equal to word
-			Set<String> keys = wordIndex.tailMap(word).keySet();
-
-			for (String key : keys) {
-				// verify it is in inverted index
-				if (key.startsWith(word)) {
-					// get word index object
-					TreeMap<String, TreeSet<Integer>> match = wordIndex.get(key);
-					determineAddUpdate(match, resultList, resultMap);
-				} else {
-					break;
+				for (String key : keys) {
+					// verify it is in inverted index
+					if (key.startsWith(word)) {
+						// get word index object
+						TreeMap<String, TreeSet<Integer>> match = wordIndex.get(key);
+						determineAddUpdate(match, resultList, resultMap);
+					} else {
+						break;
+					}
 				}
 			}
+			Collections.sort(resultList);
+			return resultList;
+		} finally {
+			lock.unlockReadOnly();
 		}
-		Collections.sort(resultList);
-		return resultList;
 	}
 
 	/**
@@ -251,6 +306,7 @@ public class InvertedIndex {
 	private void determineAddUpdate(TreeMap<String, TreeSet<Integer>> match, List<SearchResult> resultList,
 			HashMap<String, SearchResult> resultMap) {
 		// get locations for this object
+
 		Set<String> locations = match.keySet();
 
 		// verify if location is in result
@@ -272,6 +328,7 @@ public class InvertedIndex {
 				resultList.add(sr);
 			}
 		}
+
 	}
 
 }

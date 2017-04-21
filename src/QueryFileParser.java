@@ -30,8 +30,28 @@ public class QueryFileParser {
 	}
 
 	/**
-	 * Read from file line by line. Clean and sort words. Determine then perform
-	 * query.
+	 * Synchronized code. Read from file line by line. Clean and sort words.
+	 * Determine then perform query.
+	 * 
+	 * @param path
+	 *            location of where query file is
+	 * @param exact
+	 *            true if exact false if partial
+	 */
+	public void synchronizedParseQueryFile(Path path, boolean exact, WorkQueue queue) {
+		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				queue.execute(new SearchTask(line, exact, index, map));
+			}
+		} catch (IOException e) {
+			System.out.println("Unable to read query file");
+		}
+	}
+
+	/**
+	 * Serial Code. Read from file line by line. Clean and sort words. Determine
+	 * then perform query.
 	 * 
 	 * @param path
 	 *            location of where query file is
@@ -77,6 +97,45 @@ public class QueryFileParser {
 		} catch (IOException e) {
 			System.out.println("Unable to write results to file");
 		}
+	}
+
+	/**
+	 * Runnable task that ...
+	 */
+	private static class SearchTask implements Runnable {
+
+		private String line;
+		private boolean exact;
+		private InvertedIndex index;
+		private Map<String, List<SearchResult>> map;
+
+		public SearchTask(String line, boolean exact, InvertedIndex index, Map<String, List<SearchResult>> map) {
+			this.line = line;
+			this.exact = exact;
+			this.index = index;
+			this.map = map;
+		}
+
+		@Override
+		public void run() {
+			String cleanedTemp[] = WordParser.parseWords(line);
+
+			if (cleanedTemp.length != 0) {
+
+				Arrays.sort(cleanedTemp);
+				// perform search
+				List<SearchResult> results;
+				if (exact == true) {
+					results = index.exactSearch(cleanedTemp);
+					map.put(String.join(" ", cleanedTemp), results);
+				} else {
+					results = index.partialSearch(cleanedTemp);
+					map.put(String.join(" ", cleanedTemp), results);
+				}
+
+			}
+		}
+
 	}
 
 }
