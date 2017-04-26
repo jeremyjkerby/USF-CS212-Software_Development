@@ -72,6 +72,8 @@ public class WorkQueue {
 		log.debug("Worker queue started with {}", workers.length);
 
 	}
+	
+	// TODO Javadoc
 
 	private void incrementPending() {
 		synchronized (queue) {

@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+// TODO You need to restore your old Project 2 classes, because this is no longer appropriate to use for single threading
+
 /**
  * Nested data structure to store strings found and the files and positions they
  * were found.
@@ -46,7 +48,7 @@ public class InvertedIndex {
 	 * @param position
 	 *            position word was found
 	 */
-	public void add(String word, String file, int position) {
+	public void add(String word, String file, int position) { // TODO Change this to a private void addHelper(...)
 		// inner TreeMap does not exist so create it
 		lock.lockReadWrite();
 		try {
@@ -66,6 +68,8 @@ public class InvertedIndex {
 			lock.unlockReadWrite();
 		}
 	}
+	
+	// TODO Create a new add() that calls addHelper, and your addAll() method should also call addHelper
 
 	/**
 	 * Adds the array of words at once, assuming the first word in the array is
@@ -92,7 +96,7 @@ public class InvertedIndex {
 	 *            filename origin of words
 	 */
 	public void addAll(String[] words, int start, String filename) {
-
+		// TODO This is locking inside a loop, which is very slow
 		for (int i = 0; i < words.length; i++) {
 			add(words[i], filename, start);
 			start++;

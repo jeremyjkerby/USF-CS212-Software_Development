@@ -1,4 +1,6 @@
 
+// TODO Remove old TODOs
+
 /**
  * A simple custom lock that allows simultaneously read operations, but
  * disallows simultaneously write and read/write operations.
@@ -45,7 +47,7 @@ public class ReadWriteLock {
 	public synchronized void unlockReadOnly() {
 		// TODO
 		readers--;
-		notifyAll();
+		notifyAll(); // TODO Only wakes up waiting writers, if readers is 0, then notifyAll
 	}
 
 	/**

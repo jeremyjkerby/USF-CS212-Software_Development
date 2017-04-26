@@ -26,6 +26,7 @@ public class Driver {
 		int threadCount = 0;
 
 		if (arguments.hasFlag("-thread")) {
+			// TODO arguments.getInteger
 			threadCount = Integer.parseInt(arguments.getString("-thread"));
 			log.debug("Threads entered to create " + threadCount);
 			// do something
@@ -33,10 +34,10 @@ public class Driver {
 				log.debug("Running synchronized code");
 				// handle path argument
 				Path path = Paths.get(arguments.getString("-path"));
-				queue = new WorkQueue(threadCount);
+				queue = new WorkQueue(threadCount); // TODO Move this outside the -path block
 				SynchronizedInvertedIndexBuilder.buildIndex(path, index, queue);
 				queue.finish();
-				queue.shutdown();
+				queue.shutdown(); // TODO Remove this from here and use the same queue in both places
 			}
 		} else if (arguments.getString("-path") != null) {
 			log.debug("Running serial code");
@@ -66,7 +67,7 @@ public class Driver {
 
 				query.synchronizedParseQueryFile(path, arguments.hasFlag("-exact"), queue);
 				queue.finish();
-				queue.shutdown(); // there should be no more threading
+				queue.shutdown(); // there should be no more threading // TODO DO this at the end of Driver if your queue is not null
 			}
 		} else if (arguments.hasFlag("-query")) {
 			String queryPath = arguments.getString("-query");
