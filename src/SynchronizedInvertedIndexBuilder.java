@@ -5,6 +5,8 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+// TODO Use Synchronized or ThreadSafe for storing stuff
+// TODO Multithreaded or Threaded or Concurrent for doing stuff
 public class SynchronizedInvertedIndexBuilder {
 
 	/**
@@ -52,6 +54,7 @@ public class SynchronizedInvertedIndexBuilder {
 		}
 	}
 
+	// TODO Remove
 	/**
 	 * Opens the file located at the path provided, parses each line in the file
 	 * into words, and stores those words in a word index.
@@ -98,7 +101,7 @@ public class SynchronizedInvertedIndexBuilder {
 	private static class BuilderTask implements Runnable {
 
 		private Path path;
-		private final InvertedIndex index;
+		private final InvertedIndex index; // TODO After restoring old InvertedIndex, make sure this is the thread-safe version
 
 		public BuilderTask(Path path, InvertedIndex index) {
 			this.path = path;
@@ -110,7 +113,7 @@ public class SynchronizedInvertedIndexBuilder {
 			try {
 				buildFromHTML(path, index);
 			} catch (IOException e) {
-				e.printStackTrace();
+				e.printStackTrace(); // TODO
 			}
 		}
 

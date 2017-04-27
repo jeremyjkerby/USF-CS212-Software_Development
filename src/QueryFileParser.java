@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+// TODO Need to store the single-threaded version here as well
+
 /**
  * Reads data to query. Determines what search to take. Executes search. Writes
  * results to file.
@@ -93,7 +95,7 @@ public class QueryFileParser {
 	 */
 	public void toJSON(Path path) {
 		try {
-			JSONWriter.searchResults(map, path);
+			JSONWriter.searchResults(map, path); // TODO Unprotected access to map
 		} catch (IOException e) {
 			System.out.println("Unable to write results to file");
 		}
@@ -102,10 +104,12 @@ public class QueryFileParser {
 	/**
 	 * Runnable task that ...
 	 */
-	private static class SearchTask implements Runnable {
+	private static class SearchTask implements Runnable { // TODO Remove static keyword
 
 		private String line;
 		private boolean exact;
+		
+		// TODO These you shouldn't need to pass into the constructor
 		private InvertedIndex index;
 		private Map<String, List<SearchResult>> map;
 
@@ -127,7 +131,7 @@ public class QueryFileParser {
 				List<SearchResult> results;
 				if (exact == true) {
 					results = index.exactSearch(cleanedTemp);
-					map.put(String.join(" ", cleanedTemp), results);
+					map.put(String.join(" ", cleanedTemp), results); // TODO Must protect access to map everywhere
 				} else {
 					results = index.partialSearch(cleanedTemp);
 					map.put(String.join(" ", cleanedTemp), results);
