@@ -1,6 +1,3 @@
-
-// TODO Remove old TODOs
-
 /**
  * A simple custom lock that allows simultaneously read operations, but
  * disallows simultaneously write and read/write operations.
@@ -28,12 +25,10 @@ public class ReadWriteLock {
 	 * @throws InterruptedException
 	 */
 	public synchronized void lockReadOnly() {
-		// TODO
 		while (writers > 0) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -45,9 +40,10 @@ public class ReadWriteLock {
 	 * threads if necessary.
 	 */
 	public synchronized void unlockReadOnly() {
-		// TODO
 		readers--;
-		notifyAll(); // TODO Only wakes up waiting writers, if readers is 0, then notifyAll
+		if (readers == 0) {
+			notifyAll();
+		}
 	}
 
 	/**
@@ -57,12 +53,10 @@ public class ReadWriteLock {
 	 * @throws InterruptedException
 	 */
 	public synchronized void lockReadWrite() {
-		// TODO
 		while (readers > 0 || writers > 0) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -74,7 +68,6 @@ public class ReadWriteLock {
 	 * threads if necessary.
 	 */
 	public synchronized void unlockReadWrite() {
-		// TODO
 		writers--;
 		notifyAll();
 	}

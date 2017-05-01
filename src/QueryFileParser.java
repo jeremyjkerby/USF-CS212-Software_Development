@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-// TODO Need to store the single-threaded version here as well
-
 /**
  * Reads data to query. Determines what search to take. Executes search. Writes
  * results to file.
@@ -19,6 +17,7 @@ public class QueryFileParser {
 
 	private final Map<String, List<SearchResult>> map;
 	private final InvertedIndex index;
+	private final SynchronizedInvertedIndex synchronizedIndex;
 
 	/**
 	 * Initialize the QueryFileParser. Requires an InvertedIndex.
@@ -26,8 +25,9 @@ public class QueryFileParser {
 	 * @param index
 	 *            InvertedIndex that will be used to search
 	 */
-	public QueryFileParser(InvertedIndex index) {
+	public QueryFileParser(InvertedIndex index, SynchronizedInvertedIndex synchronizedIndex) {
 		this.index = index;
+		this.synchronizedIndex = synchronizedIndex;
 		map = new TreeMap<String, List<SearchResult>>();
 	}
 
@@ -44,7 +44,7 @@ public class QueryFileParser {
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {
-				queue.execute(new SearchTask(line, exact, index, map));
+				queue.execute(new SearchTask(line, exact));
 			}
 		} catch (IOException e) {
 			System.out.println("Unable to read query file");
@@ -95,29 +95,25 @@ public class QueryFileParser {
 	 */
 	public void toJSON(Path path) {
 		try {
-			JSONWriter.searchResults(map, path); // TODO Unprotected access to map
+			synchronized (synchronizedIndex) {
+				JSONWriter.searchResults(map, path);
+			}
 		} catch (IOException e) {
 			System.out.println("Unable to write results to file");
 		}
 	}
 
 	/**
-	 * Runnable task that ...
+	 * Runnable task that performs search
 	 */
-	private static class SearchTask implements Runnable { // TODO Remove static keyword
+	private class SearchTask implements Runnable {
 
 		private String line;
 		private boolean exact;
-		
-		// TODO These you shouldn't need to pass into the constructor
-		private InvertedIndex index;
-		private Map<String, List<SearchResult>> map;
 
-		public SearchTask(String line, boolean exact, InvertedIndex index, Map<String, List<SearchResult>> map) {
+		public SearchTask(String line, boolean exact) {
 			this.line = line;
 			this.exact = exact;
-			this.index = index;
-			this.map = map;
 		}
 
 		@Override
@@ -130,11 +126,15 @@ public class QueryFileParser {
 				// perform search
 				List<SearchResult> results;
 				if (exact == true) {
-					results = index.exactSearch(cleanedTemp);
-					map.put(String.join(" ", cleanedTemp), results); // TODO Must protect access to map everywhere
+					results = synchronizedIndex.exactSearch(cleanedTemp);
+					synchronized (synchronizedIndex) {
+						map.put(String.join(" ", cleanedTemp), results);
+					}
 				} else {
-					results = index.partialSearch(cleanedTemp);
-					map.put(String.join(" ", cleanedTemp), results);
+					results = synchronizedIndex.partialSearch(cleanedTemp);
+					synchronized (synchronizedIndex) {
+						map.put(String.join(" ", cleanedTemp), results);
+					}
 				}
 
 			}

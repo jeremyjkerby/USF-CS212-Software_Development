@@ -5,9 +5,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-// TODO Use Synchronized or ThreadSafe for storing stuff
-// TODO Multithreaded or Threaded or Concurrent for doing stuff
-public class SynchronizedInvertedIndexBuilder {
+public class ConcurrentInvertedIndexBuilder {
 
 	/**
 	 * Creates and returns a new word index built from the file located at the
@@ -21,9 +19,7 @@ public class SynchronizedInvertedIndexBuilder {
 	 * @see {@link #buildIndex(Path, InvertedIndex)}
 	 */
 	public static InvertedIndex buildIndex(Path path, WorkQueue queue) {
-		InvertedIndex index = new InvertedIndex();
-		// in driver create work and pass
-		// reference to here of queue
+		SynchronizedInvertedIndex index = new SynchronizedInvertedIndex();
 		buildIndex(path, index, queue);
 		return index;
 	}
@@ -37,7 +33,7 @@ public class SynchronizedInvertedIndexBuilder {
 	 * @param index
 	 *            inverted index to add words
 	 */
-	public static void buildIndex(Path path, InvertedIndex index, WorkQueue queue) {
+	public static void buildIndex(Path path, SynchronizedInvertedIndex index, WorkQueue queue) {
 		if (Files.isDirectory(path)) { // is directory
 			try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
 				for (Path p : stream) {
@@ -48,13 +44,11 @@ public class SynchronizedInvertedIndexBuilder {
 			}
 		} else { // is file
 			if (path.toString().matches("(?i).*html?")) {
-				// buildFromHTML(path, index); // execute here
 				queue.execute(new BuilderTask(path, index));
 			}
 		}
 	}
 
-	// TODO Remove
 	/**
 	 * Opens the file located at the path provided, parses each line in the file
 	 * into words, and stores those words in a word index.
@@ -94,16 +88,15 @@ public class SynchronizedInvertedIndexBuilder {
 		}
 	}
 
-	// nested runnable task to build index
 	/**
-	 * Runnable task that ...
+	 * Runnable task that builds SynchronizedInvertedIndex from given path.
 	 */
 	private static class BuilderTask implements Runnable {
 
 		private Path path;
-		private final InvertedIndex index; // TODO After restoring old InvertedIndex, make sure this is the thread-safe version
+		private final SynchronizedInvertedIndex index;
 
-		public BuilderTask(Path path, InvertedIndex index) {
+		public BuilderTask(Path path, SynchronizedInvertedIndex index) {
 			this.path = path;
 			this.index = index;
 		}
@@ -113,7 +106,7 @@ public class SynchronizedInvertedIndexBuilder {
 			try {
 				buildFromHTML(path, index);
 			} catch (IOException e) {
-				e.printStackTrace(); // TODO
+				System.out.println("Task ended prematurely");
 			}
 		}
 

@@ -22,22 +22,22 @@ public class Driver {
 	public static void main(String[] args) {
 		ArgumentMap arguments = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex();
+		SynchronizedInvertedIndex synchronizedIndex = new SynchronizedInvertedIndex();
 		WorkQueue queue = null;
 		int threadCount = 0;
 
 		if (arguments.hasFlag("-thread")) {
-			// TODO arguments.getInteger
-			threadCount = Integer.parseInt(arguments.getString("-thread"));
+			threadCount = arguments.getInteger("-thread", 5);
 			log.debug("Threads entered to create " + threadCount);
-			// do something
+			queue = new WorkQueue(threadCount);
 			if (arguments.getString("-path") != null) {
 				log.debug("Running synchronized code");
 				// handle path argument
 				Path path = Paths.get(arguments.getString("-path"));
-				queue = new WorkQueue(threadCount); // TODO Move this outside the -path block
-				SynchronizedInvertedIndexBuilder.buildIndex(path, index, queue);
+
+				ConcurrentInvertedIndexBuilder.buildIndex(path, synchronizedIndex, queue);
 				queue.finish();
-				queue.shutdown(); // TODO Remove this from here and use the same queue in both places
+
 			}
 		} else if (arguments.getString("-path") != null) {
 			log.debug("Running serial code");
@@ -55,19 +55,18 @@ public class Driver {
 		}
 
 		// handle query argument
-		QueryFileParser query = new QueryFileParser(index);
+		QueryFileParser query = new QueryFileParser(index, synchronizedIndex);
 		if (arguments.hasFlag("-thread") && arguments.hasFlag("-query")) {
 			String queryPath = arguments.getString("-query");
 			if (queryPath != null) {
 				// we were given -query argument with value
 				Path path = Paths.get(queryPath);
 				// determine search type
-				queue = new WorkQueue(threadCount);
 				log.debug("Running threaded query code");
 
 				query.synchronizedParseQueryFile(path, arguments.hasFlag("-exact"), queue);
 				queue.finish();
-				queue.shutdown(); // there should be no more threading // TODO DO this at the end of Driver if your queue is not null
+
 			}
 		} else if (arguments.hasFlag("-query")) {
 			String queryPath = arguments.getString("-query");
@@ -86,6 +85,10 @@ public class Driver {
 			// we were given -results argument with no value
 			Path path = Paths.get(arguments.getString("-results", "results.json"));
 			query.toJSON(path);
+		}
+
+		if (queue != null) {
+			queue.shutdown();
 		}
 	}
 

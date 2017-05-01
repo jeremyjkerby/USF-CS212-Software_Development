@@ -49,13 +49,17 @@ public class WorkQueue {
 	 * @param threads
 	 *            number of worker threads; should be greater than 1
 	 */
-
 	public static void main(String[] args) {
 		WorkQueue q = new WorkQueue();
 		q.finish();
 		q.shutdown();
 	}
 
+	/**
+	 * Constructor method to initialize variables and get things going.
+	 * 
+	 * @param threads
+	 */
 	public WorkQueue(int threads) {
 		this.queue = new LinkedList<Runnable>();
 		this.workers = new PoolWorker[threads];
@@ -72,9 +76,10 @@ public class WorkQueue {
 		log.debug("Worker queue started with {}", workers.length);
 
 	}
-	
-	// TODO Javadoc
 
+	/**
+	 * Increment pending variable.
+	 */
 	private void incrementPending() {
 		synchronized (queue) {
 			pending++;
@@ -82,6 +87,9 @@ public class WorkQueue {
 		}
 	}
 
+	/**
+	 * Decrement pending variable.
+	 */
 	private void decrementPending() {
 		synchronized (queue) {
 			pending--;
