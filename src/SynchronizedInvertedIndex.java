@@ -12,6 +12,8 @@ public class SynchronizedInvertedIndex extends InvertedIndex {
 		super();
 		lock = new ReadWriteLock();
 	}
+	
+	// TODO Use the @Override annotation
 
 	public void add(String word, String file, int position) {
 		lock.lockReadWrite();
@@ -21,13 +23,24 @@ public class SynchronizedInvertedIndex extends InvertedIndex {
 			lock.unlockReadWrite();
 		}
 	}
-
+	
+	// TODO Don't override unless you want to change the implementation
+	// TODO Remove this
 	public void addAll(String[] words, String filename) {
 		super.addAll(words, filename);
 	}
 
+	// TODO Keep this but change the implmentation 
 	public void addAll(String[] words, int start, String filename) {
 		super.addAll(words, start, filename);
+
+		// TODO
+//		lock
+//		for (int i = 0; i < words.length; i++) {
+//			super.add(words[i], filename, start);
+//			start++;
+//		}	
+//		unlock
 	}
 
 	public int count(String word) {

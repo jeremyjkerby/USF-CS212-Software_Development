@@ -20,6 +20,52 @@ public class Driver {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		/*
+		TODO
+
+		ArgumentMap arguments = new ArgumentMap(args);
+		InvertedIndex index = null;
+		WorkQueue queue = null;
+		QueryFileParserInterface query = null;
+
+
+		if (-threads) {
+			SynchronizedInvertedIndex threadSafe = new SynchronizedInvertedIndex();
+			index = threadSafe;
+			
+			
+		}
+		else {
+			index = new InvertedIndex();
+		}
+
+		if (-path) {
+			if (queue != null) {
+				multithreaded version
+			}
+			else {
+				single-threaded version
+			}
+		}
+
+
+		if (-query) {
+			query.parseQueries(...); (make sure your multithreaded version calls finish in this method)
+		}
+
+		if (-index) {
+			index.toJSON();
+		}
+		
+		if (-results) {
+			query.toJSON();
+		}
+
+		 */
+		
+		
+		
+		
 		ArgumentMap arguments = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex();
 		SynchronizedInvertedIndex synchronizedIndex = new SynchronizedInvertedIndex();
