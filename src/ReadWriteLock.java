@@ -29,7 +29,7 @@ public class ReadWriteLock {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				e.printStackTrace(); // TODO
+				System.out.println("Thread was interrupted");
 			}
 		}
 		readers++;
@@ -57,7 +57,7 @@ public class ReadWriteLock {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				e.printStackTrace(); // TODO
+				System.out.println("Thread was interrupted");
 			}
 		}
 		writers++;

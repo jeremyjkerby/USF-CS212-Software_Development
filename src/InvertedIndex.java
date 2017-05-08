@@ -88,21 +88,21 @@ public class InvertedIndex {
 			start++;
 		}
 	}
-	
-	/* TODO Add this, and override it.
+
 	public void addAll(InvertedIndex other) {
+
 		for (String word : other.wordIndex.keySet()) {
+
 			if (this.wordIndex.containsKey(word) == false) {
 				this.wordIndex.put(word, other.wordIndex.get(word));
-			}
-			else {
-				loop through the paths
-					if the path doesn't exist, put the position set from other
-					else combine this position set and other position set using.. addAll
+			} else {
+				// loop through the paths
+				// if the path doesn't exist, put the position set from other
+				// else combine this position set and other position set using..
+				// addAll
 			}
 		}
 	}
-	*/
 
 	/**
 	 * Returns the number of times a word was found (i.e. the number of
