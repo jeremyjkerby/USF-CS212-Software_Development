@@ -49,6 +49,7 @@ public class ConcurrentInvertedIndexBuilder {
 		}
 	}
 
+	// TODO Remove
 	/**
 	 * Opens the file located at the path provided, parses each line in the file
 	 * into words, and stores those words in a word index.
@@ -104,7 +105,16 @@ public class ConcurrentInvertedIndexBuilder {
 		@Override
 		public void run() {
 			try {
+				// TODO InvertedIndexBuilder.buildFromHTML(path, index);
 				buildFromHTML(path, index);
+				
+				
+				/* TODO
+				InvertedIndex local = new InvertedIndex();
+				InvertedIndexBuilder.buildFromHTML(path, local);
+				index.addAll(local);
+				*/
+				
 			} catch (IOException e) {
 				System.out.println("Task ended prematurely");
 			}

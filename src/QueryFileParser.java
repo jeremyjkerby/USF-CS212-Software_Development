@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+// TODO Need the single-threaded class versus the multi-threaded one... wont initialize a synchronized index if we don't need one
+
+// TODO Create a QueryFileParser interface that is implemented by both the multi and single-threaded versions 
+
 /**
  * Reads data to query. Determines what search to take. Executes search. Writes
  * results to file.
@@ -128,6 +132,7 @@ public class QueryFileParser {
 				if (exact == true) {
 					results = synchronizedIndex.exactSearch(cleanedTemp);
 					synchronized (synchronizedIndex) {
+						// TODO Move the join() outside the synchronized block
 						map.put(String.join(" ", cleanedTemp), results);
 					}
 				} else {
@@ -136,6 +141,8 @@ public class QueryFileParser {
 						map.put(String.join(" ", cleanedTemp), results);
 					}
 				}
+				
+				// TODO Put the synchronized block out here only once
 
 			}
 		}
