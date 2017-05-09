@@ -22,6 +22,7 @@ public class ConcurrentInvertedIndexBuilder {
 		return index;
 	}
 
+	// TODO Change InvertedIndex to SynchronizedInvertedIndex
 	/**
 	 * Determines if path is directory or file. If it is a file sends of to be
 	 * processed.

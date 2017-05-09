@@ -16,7 +16,7 @@ import java.util.TreeMap;
 public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 
 	private final Map<String, List<SearchResult>> map;
-	private final InvertedIndex index;
+	private final InvertedIndex index; // TODO Use the thread-safe version
 
 	/**
 	 * Initialize the QueryFileParser. Requires an InvertedIndex.
@@ -24,7 +24,7 @@ public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 	 * @param index
 	 *            InvertedIndex that will be used to search
 	 */
-	public ConcurrentQueryFileParser(InvertedIndex index) {
+	public ConcurrentQueryFileParser(InvertedIndex index) { // TODO Use the thread-safe version, add a WorkQueue parameter
 		this.index = index;
 		map = new TreeMap<String, List<SearchResult>>();
 	}
@@ -61,7 +61,7 @@ public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 	@Override
 	public void toJSON(Path path) {
 		try {
-			synchronized (index) {
+			synchronized (index) { // TODO synchronized (map)
 				JSONWriter.searchResults(map, path);
 			}
 		} catch (IOException e) {
@@ -98,7 +98,7 @@ public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 					results = index.partialSearch(cleanedTemp);
 				}
 
-				synchronized (index) {
+				synchronized (index) { // TODO synchronized (map)
 					map.put(data, results);
 				}
 

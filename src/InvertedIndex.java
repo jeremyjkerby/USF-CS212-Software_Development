@@ -89,6 +89,7 @@ public class InvertedIndex {
 		}
 	}
 
+	// TODO ?
 	public void addAll(InvertedIndex other) {
 
 		for (String word : other.wordIndex.keySet()) {
