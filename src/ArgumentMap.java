@@ -63,7 +63,8 @@ public class ArgumentMap {
 	/**
 	 * Verify given string is valid flag.
 	 *
-	 * @param arg verify given is valid flag
+	 * @param arg
+	 *            verify given is valid flag
 	 * @return true if valid flag
 	 */
 	public static boolean isFlag(String arg) {
@@ -73,7 +74,8 @@ public class ArgumentMap {
 	/**
 	 * Verify given string is valid value.
 	 *
-	 * @param arg verify given is valid value
+	 * @param arg
+	 *            verify given is valid value
 	 * @return true is valid value
 	 */
 	public static boolean isValue(String arg) {
@@ -158,14 +160,23 @@ public class ArgumentMap {
 	public int getInteger(String flag, int defaultValue) {
 		String data = arguments.get(flag);
 		try {
-			return Integer.parseInt(data);
+			return getPostiveInteger(Integer.parseInt(data));
 		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
 
+	private int getPostiveInteger(int data) {
+		if (data >= 1) {
+			return data;
+		} else {
+			return 1;
+		}
+	}
+
 	/**
 	 * Returns string representation of arguments
+	 * 
 	 * @return value of string of arguments
 	 */
 	@Override
