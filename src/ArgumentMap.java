@@ -160,17 +160,29 @@ public class ArgumentMap {
 	public int getInteger(String flag, int defaultValue) {
 		String data = arguments.get(flag);
 		try {
-			return getPostiveInteger(Integer.parseInt(data));
+			return Integer.parseInt(data);
 		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
 
-	private int getPostiveInteger(int data) {
-		if (data >= 1) {
-			return data;
-		} else {
-			return 1;
+	/**
+	 * Returns the value for the specified flag as a positive int value. If the
+	 * flag is missing or the flag does not have a value, returns the specified
+	 * default value instead.
+	 *
+	 * @param flag
+	 *            flag to get value for
+	 * @param defaultValue
+	 *            value to return if the flag or value is missing
+	 * @return value of flag as an int that must be positive number
+	 */
+	public int getPostiveInteger(String flag, int defaultValue) {
+		String data = arguments.get(flag);
+		try {
+			return (Integer.parseInt(data) >= 1) ? Integer.parseInt(data) : 1;
+		} catch (Exception e) {
+			return defaultValue;
 		}
 	}
 

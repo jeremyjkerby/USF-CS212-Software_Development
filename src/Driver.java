@@ -34,8 +34,7 @@ public class Driver {
 
 			threadSafe = new SynchronizedInvertedIndex();
 			index = threadSafe;
-			threadCount = arguments.getInteger("-thread", 5);
-			// TODO threadCount and check if it is >= 1
+			threadCount = arguments.getPostiveInteger("-thread", 5);
 
 			queue = new WorkQueue(threadCount);
 			query = new ConcurrentQueryFileParser(threadSafe, queue);
