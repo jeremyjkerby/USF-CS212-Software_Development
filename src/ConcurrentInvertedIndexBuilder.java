@@ -22,7 +22,6 @@ public class ConcurrentInvertedIndexBuilder {
 		return index;
 	}
 
-	// TODO Change InvertedIndex to SynchronizedInvertedIndex
 	/**
 	 * Determines if path is directory or file. If it is a file sends of to be
 	 * processed.
@@ -32,7 +31,7 @@ public class ConcurrentInvertedIndexBuilder {
 	 * @param index
 	 *            inverted index to add words
 	 */
-	public static void buildIndex(Path path, InvertedIndex index, WorkQueue queue) {
+	public static void buildIndex(Path path, SynchronizedInvertedIndex index, WorkQueue queue) {
 		if (Files.isDirectory(path)) { // is directory
 			try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
 				for (Path p : stream) {

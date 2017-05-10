@@ -22,39 +22,35 @@ public class Driver {
 	public static void main(String[] args) {
 		ArgumentMap arguments = new ArgumentMap(args);
 		InvertedIndex index = null;
+		SynchronizedInvertedIndex threadSafe = null;
 		WorkQueue queue = null;
-		
-		// TODO QueryFileParserInterface query = null;
-		// TODO SynchronizedInvertedIndex threadSafe = null;
-		
-		// something is weird about this
-		// if I set query to null I can not pass SearchTest.Exceptions.07
-		QueryFileParserInterface query = new SerialQueryFileParser(index);
+		QueryFileParserInterface query = null;
 		int threadCount = 0;
 
 		// handle thread argument
 		if (arguments.hasFlag("-thread")) {
-			SynchronizedInvertedIndex threadSafe = new SynchronizedInvertedIndex(); // TODO threadSafe = new SynchronizedInvertedIndex();
+
+			log.debug("Running main synchronized code");
+
+			threadSafe = new SynchronizedInvertedIndex();
 			index = threadSafe;
 			threadCount = arguments.getInteger("-thread", 5);
 			// TODO threadCount and check if it is >= 1
-			
+
 			queue = new WorkQueue(threadCount);
-			
-			// TODO query = ConcurrentQueryFileParser(threadSafe, queue);
+			query = new ConcurrentQueryFileParser(threadSafe, queue);
 		} else {
+			log.debug("Running main serial code");
+
 			index = new InvertedIndex();
-			// TODO query = new SerialQueryFileParser(index);
+			query = new SerialQueryFileParser(index);
 		}
 
-		// TODO Add some debugging to verify multithreading is happening as expected
-		
 		// handle path argument
 		if (arguments.hasFlag("-path")) {
 			if (queue != null) {
 				Path path = Paths.get(arguments.getString("-path"));
-				// TODO threadSafe instead of index
-				ConcurrentInvertedIndexBuilder.buildIndex(path, index, queue);
+				ConcurrentInvertedIndexBuilder.buildIndex(path, threadSafe, queue);
 				queue.finish();
 			} else {
 				if (arguments.getString("-path") != null) {
@@ -70,16 +66,22 @@ public class Driver {
 			String queryPath = arguments.getString("-query");
 			if (queryPath != null) {
 				Path path = Paths.get(queryPath);
-				query = new ConcurrentQueryFileParser(index);
-				query.parseQueryFile(path, arguments.hasFlag("-exact"), queue);
+
+				log.debug("Running threaded query code");
+
+				query.parseQueryFile(path, arguments.hasFlag("-exact"));
+
 				queue.finish();
 			}
 		} else if (arguments.hasFlag("-query")) {
 			String queryPath = arguments.getString("-query");
 			if (queryPath != null) {
 				Path path = Paths.get(queryPath);
-				query = new SerialQueryFileParser(index);
-				query.parseQueryFile(path, arguments.hasFlag("-exact"), null);
+
+				// determine search type
+				log.debug("Running serial query code");
+
+				query.parseQueryFile(path, arguments.hasFlag("-exact"));
 			}
 		}
 

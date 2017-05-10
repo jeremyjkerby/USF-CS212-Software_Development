@@ -29,17 +29,8 @@ public class SerialQueryFileParser implements QueryFileParserInterface {
 		map = new TreeMap<String, List<SearchResult>>();
 	}
 
-	/**
-	 * Serial Code. Read from file line by line. Clean and sort words. Determine
-	 * then perform query.
-	 * 
-	 * @param path
-	 *            location of where query file is
-	 * @param exact
-	 *            true if exact false if partial
-	 */
 	@Override
-	public void parseQueryFile(Path path, boolean exact, WorkQueue queue) {
+	public void parseQueryFile(Path path, boolean exact) {
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -66,12 +57,6 @@ public class SerialQueryFileParser implements QueryFileParserInterface {
 		}
 	}
 
-	/**
-	 * Writes map of results to given path.
-	 * 
-	 * @param path
-	 *            where the result map will be written to
-	 */
 	@Override
 	public void toJSON(Path path) {
 		try {

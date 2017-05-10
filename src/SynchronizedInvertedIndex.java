@@ -23,7 +23,7 @@ public class SynchronizedInvertedIndex extends InvertedIndex {
 		}
 	}
 
-	// TODO @Override
+	@Override
 	public void addAll(String[] words, int start, String filename) {
 		lock.lockReadWrite();
 		for (int i = 0; i < words.length; i++) {
@@ -32,8 +32,16 @@ public class SynchronizedInvertedIndex extends InvertedIndex {
 		}
 		lock.unlockReadWrite();
 	}
-	
-	// TODO @Override and lock public void addAll(InvertedIndex other)
+
+	@Override
+	public void addAll(InvertedIndex other) {
+		lock.lockReadWrite();
+		try {
+			super.addAll(other);
+		} finally {
+			lock.unlockReadWrite();
+		}
+	}
 
 	@Override
 	public int count(String word) {

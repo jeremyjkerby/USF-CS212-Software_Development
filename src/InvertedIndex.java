@@ -89,7 +89,12 @@ public class InvertedIndex {
 		}
 	}
 
-	// TODO ?
+	/**
+	 * Adds the given InvertedIndex all at once.
+	 * 
+	 * @param other
+	 *            InvertedIndex object to add
+	 */
 	public void addAll(InvertedIndex other) {
 
 		for (String word : other.wordIndex.keySet()) {
@@ -98,6 +103,9 @@ public class InvertedIndex {
 				this.wordIndex.put(word, other.wordIndex.get(word));
 			} else {
 				// loop through the paths
+				for (String path : other.wordIndex.keySet()) {
+					System.out.println(path);
+				}
 				// if the path doesn't exist, put the position set from other
 				// else combine this position set and other position set using..
 				// addAll

@@ -16,7 +16,8 @@ import java.util.TreeMap;
 public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 
 	private final Map<String, List<SearchResult>> map;
-	private final InvertedIndex index; // TODO Use the thread-safe version
+	private final SynchronizedInvertedIndex index;
+	WorkQueue queue;
 
 	/**
 	 * Initialize the QueryFileParser. Requires an InvertedIndex.
@@ -24,24 +25,14 @@ public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 	 * @param index
 	 *            InvertedIndex that will be used to search
 	 */
-	public ConcurrentQueryFileParser(InvertedIndex index) { // TODO Use the thread-safe version, add a WorkQueue parameter
+	public ConcurrentQueryFileParser(SynchronizedInvertedIndex index, WorkQueue queue) {
 		this.index = index;
+		this.queue = queue;
 		map = new TreeMap<String, List<SearchResult>>();
 	}
 
-	/**
-	 * Synchronized code. Read from file line by line. Clean and sort words.
-	 * Determine then perform query.
-	 * 
-	 * @param path
-	 *            location of where query file is
-	 * @param exact
-	 *            true if exact false if partial
-	 * @param queue
-	 *            use to queue tasks
-	 */
 	@Override
-	public void parseQueryFile(Path path, boolean exact, WorkQueue queue) {
+	public void parseQueryFile(Path path, boolean exact) {
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -52,16 +43,10 @@ public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 		}
 	}
 
-	/**
-	 * Writes map of results to given path.
-	 * 
-	 * @param path
-	 *            where the result map will be written to
-	 */
 	@Override
 	public void toJSON(Path path) {
 		try {
-			synchronized (index) { // TODO synchronized (map)
+			synchronized (map) {
 				JSONWriter.searchResults(map, path);
 			}
 		} catch (IOException e) {
@@ -98,7 +83,7 @@ public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 					results = index.partialSearch(cleanedTemp);
 				}
 
-				synchronized (index) { // TODO synchronized (map)
+				synchronized (map) {
 					map.put(data, results);
 				}
 
