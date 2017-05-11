@@ -27,15 +27,17 @@ public class Driver {
 		QueryFileParserInterface query = null;
 		int threadCount = 0;
 
+		log.debug(arguments.toString() + " " + arguments.hasFlag("-thread"));
+
 		// handle thread argument
-		if (arguments.hasFlag("-thread")) {
+		if (arguments.hasFlag("-threads")) {
 
 			log.debug("Running main synchronized code");
 
 			threadSafe = new SynchronizedInvertedIndex();
 			index = threadSafe;
-			threadCount = arguments.getPostiveInteger("-thread", 5);
-
+			threadCount = arguments.getPostiveInteger("-threads", 5);
+			log.debug("Number of threads is " + threadCount);
 			queue = new WorkQueue(threadCount);
 			query = new ConcurrentQueryFileParser(threadSafe, queue);
 		} else {
@@ -59,25 +61,19 @@ public class Driver {
 			}
 		}
 
-		// TODO Simplify
 		// handle query argument
-		if (arguments.hasFlag("-query") && arguments.hasFlag("-thread")) {
+		if (arguments.hasFlag("-query")) {
 			String queryPath = arguments.getString("-query");
-			if (queryPath != null) {
+			if (queue != null && queryPath != null) {
 				Path path = Paths.get(queryPath);
 
 				log.debug("Running threaded query code");
 
 				query.parseQueryFile(path, arguments.hasFlag("-exact"));
-
 				queue.finish();
-			}
-		} else if (arguments.hasFlag("-query")) {
-			String queryPath = arguments.getString("-query");
-			if (queryPath != null) {
+			} else if (queryPath != null) {
 				Path path = Paths.get(queryPath);
 
-				// determine search type
 				log.debug("Running serial query code");
 
 				query.parseQueryFile(path, arguments.hasFlag("-exact"));
@@ -85,9 +81,17 @@ public class Driver {
 		}
 
 		// handle index argument
+		// Added logic of inner if/else to ensure we are writing correct index
 		if (arguments.hasFlag("-index")) {
-			Path path = Paths.get(arguments.getString("-index", "index.json"));
-			index.toJSON(path);
+			if (queue != null) {
+				log.debug("Running threaded index code");
+				Path path = Paths.get(arguments.getString("-index", "index.json"));
+				threadSafe.toJSON(path);
+			} else {
+				log.debug("Running serial index code");
+				Path path = Paths.get(arguments.getString("-index", "index.json"));
+				index.toJSON(path);
+			}
 		}
 
 		// handle results argument

@@ -3,7 +3,12 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ConcurrentInvertedIndexBuilder {
+
+	public static final Logger log = LogManager.getLogger();
 
 	/**
 	 * Creates and returns a new word index built from the file located at the
@@ -63,9 +68,11 @@ public class ConcurrentInvertedIndexBuilder {
 		@Override
 		public void run() {
 			try {
+				log.debug(path.toString() + " is starting...");
 				InvertedIndex local = new InvertedIndex();
 				InvertedIndexBuilder.buildFromHTML(path, local);
 				index.addAll(local);
+				log.debug(path.toString() + " is finishing...");
 			} catch (IOException e) {
 				System.out.println("Task ended prematurely");
 			}
