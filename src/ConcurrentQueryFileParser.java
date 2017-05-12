@@ -17,7 +17,7 @@ public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 
 	private final Map<String, List<SearchResult>> map;
 	private final SynchronizedInvertedIndex index;
-	WorkQueue queue; // TODO private final
+	private final WorkQueue queue;
 
 	/**
 	 * Initialize the QueryFileParser. Requires an InvertedIndex.
@@ -38,8 +38,7 @@ public class ConcurrentQueryFileParser implements QueryFileParserInterface {
 			while ((line = reader.readLine()) != null) {
 				queue.execute(new SearchTask(line, exact));
 			}
-			
-			// TODO queue.finish();
+			queue.finish();
 		} catch (IOException e) {
 			System.out.println("Unable to read query file");
 		}

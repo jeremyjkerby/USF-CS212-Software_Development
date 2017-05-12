@@ -31,7 +31,6 @@ public class Driver {
 
 		// handle thread argument
 		if (arguments.hasFlag("-threads")) {
-
 			log.debug("Running main synchronized code");
 
 			threadSafe = new SynchronizedInvertedIndex();
@@ -64,38 +63,17 @@ public class Driver {
 		// handle query argument
 		if (arguments.hasFlag("-query")) {
 			String queryPath = arguments.getString("-query");
-			
-			// TODO Do not need to check if queue is null, always do query.parseQueryFile();
-			
-			if (queue != null && queryPath != null) {
+			if (queryPath != null) {
 				Path path = Paths.get(queryPath);
-
-				log.debug("Running threaded query code");
-
-				query.parseQueryFile(path, arguments.hasFlag("-exact"));
-				queue.finish(); // TODO Remove
-			} else if (queryPath != null) {
-				Path path = Paths.get(queryPath);
-
-				log.debug("Running serial query code");
-
 				query.parseQueryFile(path, arguments.hasFlag("-exact"));
 			}
 		}
 
 		// handle index argument
-		// Added logic of inner if/else to ensure we are writing correct index
 		if (arguments.hasFlag("-index")) {
-			if (queue != null) { // TODO Remove
-				log.debug("Running threaded index code");
-				Path path = Paths.get(arguments.getString("-index", "index.json"));
-				threadSafe.toJSON(path);
-			} else {
-				// TODO Only block of code you need here
-				log.debug("Running serial index code");
-				Path path = Paths.get(arguments.getString("-index", "index.json"));
-				index.toJSON(path);
-			}
+			Path path = Paths.get(arguments.getString("-index", "index.json"));
+			index.toJSON(path);
+
 		}
 
 		// handle results argument
