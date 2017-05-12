@@ -64,13 +64,16 @@ public class Driver {
 		// handle query argument
 		if (arguments.hasFlag("-query")) {
 			String queryPath = arguments.getString("-query");
+			
+			// TODO Do not need to check if queue is null, always do query.parseQueryFile();
+			
 			if (queue != null && queryPath != null) {
 				Path path = Paths.get(queryPath);
 
 				log.debug("Running threaded query code");
 
 				query.parseQueryFile(path, arguments.hasFlag("-exact"));
-				queue.finish();
+				queue.finish(); // TODO Remove
 			} else if (queryPath != null) {
 				Path path = Paths.get(queryPath);
 
@@ -83,11 +86,12 @@ public class Driver {
 		// handle index argument
 		// Added logic of inner if/else to ensure we are writing correct index
 		if (arguments.hasFlag("-index")) {
-			if (queue != null) {
+			if (queue != null) { // TODO Remove
 				log.debug("Running threaded index code");
 				Path path = Paths.get(arguments.getString("-index", "index.json"));
 				threadSafe.toJSON(path);
 			} else {
+				// TODO Only block of code you need here
 				log.debug("Running serial index code");
 				Path path = Paths.get(arguments.getString("-index", "index.json"));
 				index.toJSON(path);
