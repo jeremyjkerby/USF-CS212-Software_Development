@@ -1,4 +1,4 @@
-# USF-CS212-SoftwareDevelopment
+# USF-CS212-Software_Development
 
 ## Overview
 This course gave me experience in designing, implementing, testing, and debugging a large program. I was able to get advanced Java programming experience; covering topics such as: inheritance, multithreading, networking, database programming, and web development.
